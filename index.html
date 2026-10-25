@@ -62,13 +62,17 @@
       <div id="posts-feed" class="ios-feed-list"></div>
     </section>
 
-    <!-- البحث -->
-    <section id="search-tab" class="ios-tab-pane">
-      <div class="ios-profile-card">
-        <input type="text" id="search-input" class="ios-input" data-ph="searchUsers">
-        <div id="search-results" class="mt-md"></div>
-      </div>
-    </section>
+    <!-- البحث مع إشارة العدسة -->
+<section id="search-tab" class="ios-tab-pane">
+  <div class="ios-profile-card">
+    <div style="position: relative; display: flex; align-items: center;">
+      <span style="position: absolute; right: 15px; font-size: 18px; pointer-events: none; opacity: 0.6;">🔍</span>
+      <input type="text" id="search-input" class="ios-input" data-ph="searchUsers" style="padding-right: 40px;">
+    </div>
+    <div id="search-results" class="mt-md"></div>
+  </div>
+</section>
+
 
     <!-- الريلز -->
     <section id="reels-tab" class="ios-tab-pane">
