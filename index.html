@@ -13,32 +13,32 @@
 <!-- تسجيل الدخول -->
 <div id="auth-screen-1" class="ios-card active">
   <div class="ios-logo-badge">MS</div>
-  <h2 data-i="welcome"></h2>
-  <p data-i="signin"></p>
+  <h2 data-i="welcome">مرحباً بك في MS Media</h2>
+  <p data-i="signin">سجّل دخولك بالبريد وكلمة المرور</p>
   <div class="ios-input-group">
-    <input type="email" id="email-input" class="ios-input" data-ph="email" autocomplete="email">
+    <input type="email" id="email-input" class="ios-input" placeholder="البريد الإلكتروني..." autocomplete="email">
     <div class="password-wrapper">
-      <input type="password" id="password-input" class="ios-input" data-ph="password" autocomplete="current-password">
+      <input type="password" id="password-input" class="ios-input" placeholder="كلمة المرور..." autocomplete="current-password">
       <button type="button" id="toggle-password-btn" class="password-toggle-btn" aria-label="Show password">
         <svg class="ico" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
       </button>
     </div>
   </div>
-  <div class="forgot-row"><a href="#" id="forgot-password-link" data-i="forgot"></a></div>
-  <button id="next-auth-btn" class="ios-main-btn" data-i="next"></button>
+  <div class="forgot-row"><a href="#" id="forgot-password-link" data-i="forgot">نسيت كلمة المرور؟</a></div>
+  <button id="next-auth-btn" class="ios-main-btn" data-i="next">التالي</button>
 </div>
 
 <!-- تخصيص الحساب -->
 <div id="auth-screen-2" class="ios-card">
   <div class="avatar-preview-ring frame-insta"><div class="avatar-preview-inner" id="preview-avatar-box"><span>M</span></div></div>
-  <h2 data-i="custom"></h2>
-  <p data-i="customSub"></p>
+  <h2 data-i="custom">تخصيص الحساب</h2>
+  <p data-i="customSub">اختر اسم المستخدم واسم العرض الاختياري</p>
   <div class="ios-input-group">
-    <input type="text" id="name-input" class="ios-input" data-ph="username" autocomplete="off" maxlength="20">
-    <input type="text" id="display-name-input" class="ios-input" data-ph="displayName" autocomplete="off" maxlength="40">
-    <label class="ios-file-btn"><span data-i="avatar"></span><input type="file" id="avatar-file-input" accept="image/*" hidden></label>
+    <input type="text" id="name-input" class="ios-input" placeholder="اسم المستخدم (إنجليزي)..." autocomplete="off" maxlength="20">
+    <input type="text" id="display-name-input" class="ios-input" placeholder="اسم العرض (اختياري)..." autocomplete="off" maxlength="40">
+    <label class="ios-file-btn"><span data-i="avatar">📷 اختيار صورة شخصية</span><input type="file" id="avatar-file-input" accept="image/*" hidden></label>
   </div>
-  <button id="login-btn" class="ios-main-btn" data-i="enter"></button>
+  <button id="login-btn" class="ios-main-btn" data-i="enter">دخول إلى المنصة</button>
 </div>
 
 <!-- الشاشة الرئيسية -->
@@ -56,7 +56,7 @@
     <section id="feed-tab" class="ios-tab-pane active">
       <div class="stories-bar" id="stories-bar-list"></div>
       <div class="suggestions-section" id="suggestions-box">
-        <div class="suggestions-header" data-i="suggested"></div>
+        <div class="suggestions-header" data-i="suggested">اقتراحات قد تعجبك</div>
         <div class="suggestions-scroll" id="suggestions-list"></div>
       </div>
       <div id="posts-feed" class="ios-feed-list"></div>
@@ -67,7 +67,7 @@
       <div class="ios-profile-card">
         <div style="position: relative; display: flex; align-items: center;">
           <span style="position: absolute; right: 15px; font-size: 18px; pointer-events: none; opacity: 0.6;">🔍</span>
-          <input type="text" id="search-input" class="ios-input" data-ph="searchUsers" style="padding-right: 40px;">
+          <input type="text" id="search-input" class="ios-input" placeholder="ابحث عن مستخدمين..." style="padding-right: 40px;">
         </div>
         <div id="search-results" class="mt-md"></div>
       </div>
@@ -101,7 +101,7 @@
       <div class="ios-profile-card reels-card">
         <div style="font-size:40px;margin-bottom:15px">⚡</div>
         <h3 style="font-size:20px;margin-bottom:10px">Reels</h3>
-        <p class="ios-sub-text" data-i="reelsSub"></p>
+        <p class="ios-sub-text" data-i="reelsSub">استعرض أحدث مقاطع الفيديو والريلز.</p>
       </div>
     </section>
 
@@ -110,17 +110,17 @@
       <div class="dm-header-bar" id="dm-header-bar">
         <strong id="dm-current-username"></strong>
       </div>
-      <div class="dm-search-bar-wrap" id="dm-search-wrap"><input type="text" id="dm-filter-input" class="ios-input" data-ph="searchMsgs"></div>
+      <div class="dm-search-bar-wrap" id="dm-search-wrap"><input type="text" id="dm-filter-input" class="ios-input" placeholder="ابحث في الرسائل..."></div>
       <div id="chat-sidebar">
-        <div class="dm-section-title" data-i="dms"></div>
+        <div class="dm-section-title" data-i="dms">الرسائل المباشرة</div>
         <div id="users-chat-list"></div>
       </div>
       <div class="chat-main-area" id="chat-main-area" hidden>
         <div class="chat-header-user"><button id="back-to-users" class="back-btn" aria-label="Back">←</button><span id="active-chat-username"></span></div>
         <div class="ios-chat-messages" id="chat-messages"></div>
         <div class="ios-chat-input-area">
-          <input type="text" id="chat-input" class="ios-chat-input" data-ph="msg" autocomplete="off">
-          <button id="send-chat-btn" class="ios-send-btn" data-i="send"></button>
+          <input type="text" id="chat-input" class="ios-chat-input" placeholder="اكتب رسالة..." autocomplete="off">
+          <button id="send-chat-btn" class="ios-send-btn" data-i="send">إرسال</button>
         </div>
       </div>
     </section>
@@ -130,39 +130,39 @@
       <div class="insta-profile-header">
         <div class="ios-avatar-ring"><div class="ios-avatar-inner" id="user-avatar-box"></div></div>
         <div class="insta-profile-stats">
-          <div class="stat-box"><strong id="stat-posts-count">0</strong><span data-i="posts"></span></div>
-          <div class="stat-box clickable-stat" data-followers="followers"><strong id="stat-followers-count">0</strong><span data-i="followers"></span></div>
-          <div class="stat-box clickable-stat" data-followers="following"><strong id="stat-following-count">0</strong><span data-i="following"></span></div>
+          <div class="stat-box"><strong id="stat-posts-count">0</strong><span data-i="posts">منشورات</span></div>
+          <div class="stat-box clickable-stat" data-followers="followers"><strong id="stat-followers-count">0</strong><span data-i="followers">المتابعون</span></div>
+          <div class="stat-box clickable-stat" data-followers="following"><strong id="stat-following-count">0</strong><span data-i="following">المتابعة</span></div>
         </div>
       </div>
       <div class="insta-bio-section">
         <h2 id="profile-display-name"></h2>
         <p id="profile-email-text" class="ios-sub-text"></p>
-        <span id="profile-verified-status" class="verification-tag" data-i="verified" hidden></span>
+        <span id="profile-verified-status" class="verification-tag" data-i="verified" hidden>موثّق ✔️</span>
       </div>
       <div class="insta-action-buttons">
-        <button class="insta-btn-alt" data-act="editProfile" data-i="editProfile"></button><button class="insta-btn-alt" data-act="feedback" data-i="feedback"></button>
-        <button class="insta-btn-alt" data-open="ios-settings-modal" data-i="settings"></button>
+        <button class="insta-btn-alt" data-act="editProfile" data-i="editProfile">تعديل الملف الشخصي</button><button class="insta-btn-alt" data-act="feedback" data-i="feedback">💬 ملاحظات</button>
+        <button class="insta-btn-alt" data-open="ios-settings-modal" data-i="settings">⚙️ الإعدادات</button>
       </div>
 
       <div class="ios-post-creator">
-        <div style="font-weight:600;font-size:14px;margin-bottom:10px" data-i="newPost"></div>
-        <textarea id="post-text" class="ios-textarea" data-ph="mind" maxlength="1000"></textarea>
+        <div style="font-weight:600;font-size:14px;margin-bottom:10px" data-i="newPost">إنشاء منشور جديد</div>
+        <textarea id="post-text" class="ios-textarea" placeholder="بماذا تفكر؟" maxlength="1000"></textarea>
         <div class="ios-post-actions">
-          <label class="ios-file-upload-sm"><span data-i="media"></span><input type="file" id="post-media" accept="image/*,video/*" hidden></label>
-          <button id="publish-post-btn" class="ios-main-btn-sm" data-i="post"></button>
+          <label class="ios-file-upload-sm"><span data-i="media">📷 وسائط</span><input type="file" id="post-media" accept="image/*,video/*" hidden></label>
+          <button id="publish-post-btn" class="ios-main-btn-sm" data-i="post">نشر</button>
         </div>
       </div>
 
-      <div class="ios-section-title" data-i="myPosts"></div>
+      <div class="ios-section-title" data-i="myPosts">منشوراتي</div>
       <div id="my-posts-list" class="ios-feed-list"></div>
-      <div class="ios-section-title" data-i="saved"></div>
+      <div class="ios-section-title" data-i="saved">المحفوظات</div>
       <div id="saved-list" class="ios-feed-list"></div>
 
       <div id="admin-panel-section" class="ios-settings-card mt-lg" hidden>
-        <h3>🛡️ <span data-i="adminPanel"></span></h3>
-        <input type="text" id="verify-username-input" class="ios-input mt-md" data-ph="verifyUser">
-        <button id="grant-verify-btn" class="ios-main-btn mt-md" data-i="grant"></button>
+        <h3>🛡️ <span data-i="adminPanel">لوحة الإدارة</span></h3>
+        <input type="text" id="verify-username-input" class="ios-input mt-md" placeholder="اسم المستخدم للتوثيق...">
+        <button id="grant-verify-btn" class="ios-main-btn mt-md" data-i="grant">منح التوثيق ✔️</button>
         <div id="fb-list" class="mt-md"></div>
       </div>
     </section>
@@ -174,6 +174,142 @@
     <button class="ios-nav-item" data-tab="search-tab" aria-label="Search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
     <button class="ios-nav-item" data-tab="reels-tab" aria-label="Reels"><svg class="ico" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
     <button class="ios-nav-item" data-tab="chat-tab" aria-label="Messages"><svg class="ico" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+    <button class="ios-nav-item" data-tab="profile-tab" aria-label="Profile"><svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+  </nav>
+</div>
+
+<!-- الإعدادات -->
+<div id="ios-settings-modal" class="story-modal-overlay" hidden>
+  <div class="story-modal-card">
+    <button class="close-story-btn" data-close aria-label="Close">✕</button>
+    <h3 data-i="settings">⚙️ الإعدادات</h3>
+    <div class="setting-item"><span data-i="theme">المظهر (داكن / فاتح)</span><button id="theme-toggle-btn" class="ios-setting-btn">☀️ / 🌙</button></div>
+    <div class="setting-item"><span data-i="language">اللغة</span><button id="lang-toggle-btn" class="ios-setting-btn">🇸🇦 العربية</button></div>
+    <div class="setting-item"><button id="logout-btn" class="ios-main-btn danger" data-i="logout">تسجيل الخروج</button></div>
+  </div>
+</div>
+
+<!-- الستوري -->
+<div id="story-studio-modal" class="story-modal-overlay" hidden>
+  <div class="story-modal-card">
+    <button class="close-story-btn" data-close aria-label="Close">✕</button>
+    <h3 data-i="createStory">إنشاء قصة</h3>
+    <div class="story-canvas bg-grad-1"><span id="story-preview-text" data-i="storyText">نص القصة...</span></div>
+    <input type="text" id="story-text-input" class="ios-input mt-md" placeholder="اكتب نصاً..." maxlength="120">
+    <button id="publish-story-btn" class="ios-main-btn mt-md" data-i="publishStory">نشر القصة</button>
+  </div>
+</div>
+
+<!-- المتابعون -->
+<div id="followers-modal" class="story-modal-overlay" hidden>
+  <div class="story-modal-card">
+    <button class="close-story-btn" data-close aria-label="Close">✕</button>
+    <h3 id="followers-modal-title"></h3>
+    <div id="followers-modal-list"></div>
+  </div>
+</div>
+
+<!-- نافذة عامة -->
+<div id="dyn-modal" class="story-modal-overlay" hidden><div class="story-modal-card"><button class="close-story-btn" data-close aria-label="Close">✕</button><h3 id="dyn-title"></h3><div id="dyn-body"></div></div></div>
+
+<script>
+const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { alert(t('full')); } };
+const hash = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, '0')).join('');
+const readFile = f => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(f); });
+
+const T = {
+  feedback:['💬 ملاحظات','💬 Feedback'], fbHint:['رأيك بيساعدنا نطوّر التطبيق. قيّمنا واكتب ملاحظاتك.','Your opinion helps us improve. Rate us and share your notes.'],
+  fbText:['اكتب ملاحظاتك أو اقتراحاتك...','Write your notes or suggestions...'], fbNeed:['اختر تقييماً أو اكتب ملاحظة.','Pick a rating or write a note.'],
+  fbThanks:['شكراً! وصلتنا ملاحظتك 💙','Thanks! We got your feedback 💙'], fbList:['ملاحظات المستخدمين','User feedback'],
+  comments:['التعليقات','Comments'], addComment:['اكتب تعليقاً...','Add a comment...'], noComments:['لا تعليقات بعد، كن أول من يعلّق.','No comments yet. Be the first.'],
+  notifs:['الإشعارات','Notifications'], n_like:['أعجب بمنشورك','liked your post'], n_follow:['بدأ بمتابعتك','started following you'],
+  n_comment:['علّق على منشورك','commented on your post'], n_message:['أرسل لك رسالة','sent you a message'],
+  saved:['المحفوظات','Saved'], bio:['نبذة عنك...','Your bio...'], save:['حفظ','Save'],
+  copied:['تم نسخ المنشور.','Post copied.'], delConfirm:['حذف المنشور؟','Delete this post?'],
+  welcome:['مرحباً بك في MS Media','Welcome to MS Media'], signin:['سجّل دخولك بالبريد وكلمة المرور','Sign in with your email and password'],
+  forgot:['نسيت كلمة المرور؟','Forgot password?'], next:['التالي','Next'],
+  custom:['تخصيص الحساب','Customize Account'], customSub:['اختر اسم المستخدم واسم العرض الاختياري','Choose your username and optional display name'],
+  avatar:['📷 اختيار صورة شخصية','📷 Choose Avatar'], enter:['دخول إلى المنصة','Enter Platform'],
+  yourStory:['قصتك','Your Story'], suggested:['اقتراحات قد تعجبك','Suggested for you'], suggestedTag:['مقترح','Suggested'],
+  reelsSub:['استعرض أحدث مقاطع الفيديو والريلز.','Explore short videos and reels.'], dms:['الرسائل المباشرة','Direct Messages'],
+  send:['إرسال','Send'], posts:['منشورات','Posts'], followers:['المتابعون','Followers'], following:['المتابعة','Following'],
+  editProfile:['تعديل الملف الشخصي','Edit Profile'], settings:['⚙️ الإعدادات','⚙️ Settings'], newPost:['إنشاء منشور جديد','Create New Post'],
+  media:['📷 وسائط','📷 Media'], post:['نشر','Post'], myPosts:['منشوراتي','My Posts'], verified:['موثّق ✔️','Verified ✔️'],
+  adminPanel:['لوحة الإدارة','Admin Panel'], grant:['منح التوثيق ✔️','Grant Verification ✔️'],
+  theme:['المظهر (داكن / فاتح)','Theme (Dark / Light)'], language:['اللغة','Language'], langBtn:['🇺🇸 English','🇸🇦 العربية'], logout:['تسجيل الخروج','Log Out'],
+  createStory:['إنشاء قصة','Create Story'], storyText:['نص القصة...','Story text...'], publishStory:['نشر القصة','Publish Story'],
+  message:['مراسلة','Message'], follow:['متابعة','Follow'], followingBtn:['تتابعه','Following'], likes:['إعجاب','likes'], empty:['القائمة فارغة','List is empty'],
+  email:['البريد الإلكتروني...','Email...'], password:['كلمة المرور...','Password...'], username:['اسم المستخدم (إنجليزي)...','Username (English)...'],
+  displayName:['اسم العرض (اختياري)...','Display name (optional)...'], searchUsers:['ابحث عن مستخدمين...','Search users...'],
+  searchMsgs:['ابحث في الرسائل...','Search messages...'], msg:['اكتب رسالة...','Message...'], mind:['بماذا تفكر؟','What\'s on your mind?'],
+  storyInput:['اكتب نصاً...','Type text...'], verifyUser:['اسم المستخدم للتوثيق...','Username to verify...'],
+  noReset:['استعادة كلمة المرور تحتاج سيرفر، وهي غير متاحة حالياً.','Password reset needs a server and is not available yet.'],
+  badAuth:['أدخل بريداً صحيحاً وكلمة مرور من 6 أحرف على الأقل.','Enter a valid email and a password of at least 6 characters.'],
+  wrongPw:['كلمة المرور غير صحيحة.','Wrong password.'],
+  badName:['اسم المستخدم: 3-20 حرفاً إنجليزياً أو أرقاماً أو _','Username: 3-20 English letters, numbers or _'],
+  taken:['اسم المستخدم مأخوذ.','Username is already taken.'],
+  big:['الملف كبير (الحد 1.5MB).','File is too large (max 1.5MB).'], full:['مساحة التخزين ممتلئة.','Storage is full.']
+};
+let lang = load('ms_lang', 'ar'), theme = load('ms_theme', 'dark');
+function t(k) { return T[k]?.[lang === 'ar' ? 0 : 1] || k; }
+
+function applyTheme() { document.body.className = theme + '-theme'; }
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  $$('[data-i]').forEach(e => { const k = e.dataset.i; if(T[k]) e.textContent = t(k); });
+  $$('[data-ph]').forEach(e => { const k = e.dataset.ph; if(T[k]) e.placeholder = t(k); });
+  const btn = $('#lang-toggle-btn'); if(btn) btn.textContent = t('langBtn');
+  if (me) renderAll();
+  moveBubble();
+}
+
+const ADMIN_EMAIL = 'mahmood@gmail.com', MAX = 1.5e6;
+let users = load('ms_all_users', []), posts = load('ms_posts', []), stories = load('ms_stories', []);
+let msgs = load('ms_private_chat', []), verified = load('ms_verified', ['mahmood']);
+users.forEach(u => { u.followersList ??= []; u.followingList ??= []; });
+let me = users.find(u => u.name === load('ms_session', null)) || null;
+let chatWith = null, avatarData = '', temp = null;
+
+if (!posts.length) {
+  posts = [
+    { author:'fcbarcelona', displayName:'FC Barcelona', verified:true, text:'La convocatòria per al Clàssic #fcbarcelona', media:'', mediaType:'', likes:44200, likedBy:[] },
+    { author:'mll_i1m', displayName:'Mahmood', verified:true, text:'MS Media Glass Clone 🔥', media:'', mediaType:'', likes:1240, likedBy:[] }
+  ];
+  save('ms_posts', posts);
+}
+if (!stories.length) {
+  stories = [{ author:'a_ramziii', icon:'🔥' }, { author:'efhubx', icon:'27' }, { author:'tm15_k22', icon:'⚽' }];
+  save('ms_stories', stories);
+}
+
+posts.forEach((p, i) => { p.id ??= 's' + i; p.time ??= Date.now(); p.comments ??= []; });
+save('ms_posts', posts);
+let notifs = load('ms_notifs', []), feedback = load('ms_feedback', []), fbStars = 0;
+
+$('#toggle-password-btn').onclick = () => { const i = $('#password-input'); i.type = i.type === 'password' ? 'text' : 'password'; };
+$('#forgot-password-link').onclick = e => { e.preventDefault(); alert(t('noReset')); };
+$('#avatar-file-input').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  if (f.size > MAX) return alert(t('big'));
+  avatarData = await readFile(f);
+  $('#preview-avatar-box').innerHTML = `<img src="${avatarData}" alt="">`;
+};
+
+$('#next-auth-btn').onclick = async () => {
+  const email = $('#email-input').value.trim().toLowerCase(), pw = $('#password-input').value;
+  if (!/^\S+@\S+\.\S+$/.test(email) || pw.length < 6) return alert(t('badAuth'));
+  const passHash = await hash(pw), u = users.find(x => x.email === email);
+  if (u) {
+    if (u.passHash && u.passHash !== passHash) return alert(t('wrongPw'));
+    if (!u.passHash) { u.passHash = passHash; save('ms_all_users', users); }
+    return login(u);
+  }
+  temp = { email, passHash };
+  $('#auth-screen-1').classList.remova2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
     <button class="ios-nav-item" data-tab="profile-tab" aria-label="Profile"><svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
   </nav>
 </div>
