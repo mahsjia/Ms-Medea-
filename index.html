@@ -1148,6 +1148,333 @@
             else bottomNav.classList.remove('nav-hidden');
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         }, false);
+// ===== MS Media update =====
+// Paste this whole block inside the main IIFE, right before the "Boot" section. Nothing else to edit.
+
+(function injectUI() {
+    const style = document.createElement('style');
+    style.textContent = `/* MS Media update — load AFTER style.css */
+.ios-main-body { padding-bottom: 120px; }
+
+/* ---------- Floating nav: round search + glass pill ---------- */
+body .ios-bottom-nav {
+  position: fixed !important; left: 14px !important; right: 14px !important;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+  width: auto !important; max-width: 520px; margin: 0 auto !important;
+  height: auto !important; padding: 0 !important;
+  display: flex !important; align-items: center; gap: 10px;
+  background: none !important; border: 0 !important; box-shadow: none !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  border-radius: 0 !important; transform: none !important; z-index: 50;
+  transition: transform .35s ease, opacity .35s ease;
+}
+body .ios-bottom-nav.nav-hidden { transform: translateY(170%) !important; }
+
+.nav-pill, .ios-bottom-nav .nav-search {
+  color: #fff; height: 64px; border-radius: 999px;
+  background: linear-gradient(120deg, rgba(255,255,255,.10), rgba(15,25,60,.55) 55%, rgba(70,20,30,.45));
+  -webkit-backdrop-filter: blur(26px) saturate(180%); backdrop-filter: blur(26px) saturate(180%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.16), 0 10px 30px rgba(0,0,0,.35);
+}
+.light-theme .nav-pill, .light-theme .ios-bottom-nav .nav-search {
+  color: #111; background: rgba(255,255,255,.62);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08), 0 10px 30px rgba(0,0,0,.15);
+}
+.nav-pill { position: relative; flex: 1; display: flex; align-items: center; padding: 5px; overflow: hidden; }
+
+.nav-pill .ios-nav-item {
+  position: relative; z-index: 1; flex: 1; height: 100%; padding: 0; margin: 0;
+  display: grid; place-items: center; background: none; border: 0; color: inherit; cursor: pointer;
+}
+.ios-bottom-nav .nav-search {
+  flex: 0 0 64px; width: 64px; padding: 0; border: 0; display: grid; place-items: center; cursor: pointer;
+}
+.ios-bottom-nav .nav-search.active { background: rgba(255,255,255,.24); }
+.light-theme .ios-bottom-nav .nav-search.active { background: rgba(0,0,0,.10); }
+.ios-bottom-nav .ios-nav-item.active svg { stroke-width: 2.7; }
+
+.nav-pill .liquid-bubble {
+  position: absolute; top: 5px; bottom: 5px; left: 0; right: auto; height: auto;
+  border-radius: 999px; background: rgba(255,255,255,.18); pointer-events: none; z-index: 0;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.25);
+  transition: transform .45s cubic-bezier(.34,1.4,.5,1), width .3s ease, opacity .2s ease;
+}
+.light-theme .nav-pill .liquid-bubble { background: rgba(0,0,0,.09); }
+
+.nav-avatar {
+  width: 32px; height: 32px; border-radius: 50%; overflow: hidden; display: flex;
+  align-items: center; justify-content: center; font-weight: 700; font-size: 14px;
+  background: var(--accent); color: #fff;
+}
+.nav-dot {
+  position: absolute; bottom: 12px; left: calc(50% - 22px); width: 14px; height: 14px;
+  border-radius: 50%; background: #ff3b30; box-shadow: 0 0 0 3px #000;
+}
+.light-theme .nav-dot { box-shadow: 0 0 0 3px #fff; }
+.nav-dot[hidden] { display: none; }
+
+/* ---------- Post actions: like / comment / repost / send ---------- */
+.post-actions { display: flex; align-items: center; gap: 20px; padding: 10px 14px; }
+.act-btn {
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 0;
+  background: none; border: 0; color: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.act-btn.send { margin-inline-start: auto; }
+.act-btn.like.on svg { fill: #ff3b30; stroke: #ff3b30; }
+.act-btn.rep.on { color: #34c759; }
+.post-comment { margin: 0 14px 6px; font-size: 13px; }
+
+/* ---------- Create sheet & reels ---------- */
+.create-option {
+  display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 10px; padding: 14px;
+  border: 0; border-radius: 16px; background: rgba(255,255,255,.10); color: inherit;
+  font-size: 15px; font-weight: 600; text-align: start; cursor: pointer;
+}
+.create-option > span:first-child { font-size: 22px; }
+.reels-head { display: flex; justify-content: space-between; align-items: center; padding: 6px 4px 12px; }
+.reels-head h3 { margin: 0; font-size: 20px; }
+#reels-list video { width: 100%; max-height: 72vh; background: #000; }
+`;
+    document.head.appendChild(style);
+
+    const topActions = document.querySelector('.insta-top-actions');
+    if (topActions && !topActions.querySelector('[data-open-create]')) {
+        topActions.insertAdjacentHTML('afterbegin', `<button class="insta-top-icon" title="Create" data-open-create="1">
+    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="5"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+</button>`);
+    }
+    $('reels-tab').innerHTML = `<div class="reels-head">
+        <h3 class="i18n" data-ar="ريلز" data-en="Reels">Reels</h3>
+        <button class="ios-main-btn-sm i18n" data-create="reel" data-ar="🎬 انشر ريل" data-en="🎬 Publish Reel">🎬 Publish Reel</button>
+    </div>
+    <div id="reels-list" class="ios-feed-list"></div>`;
+    $('bottom-nav-bar').innerHTML = `<div class="nav-pill" id="nav-pill">
+        <div class="liquid-bubble" id="liquid-bubble"></div>
+        <button class="ios-nav-item active" data-tab="feed-tab" title="Home">
+            <svg viewBox="0 0 24 24" width="26" height="26" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </button>
+        <button class="ios-nav-item" data-tab="reels-tab" title="Reels">
+            <svg viewBox="0 0 24 24" width="26" height="26" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"></rect><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+        </button>
+        <button class="ios-nav-item" data-tab="chat-tab" title="Messages">
+            <svg viewBox="0 0 24 24" width="26" height="26" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4 20-7z"></path></svg>
+            <span class="nav-dot" id="dot-chat" hidden></span>
+        </button>
+        <button class="ios-nav-item" data-tab="profile-tab" title="Profile">
+            <span class="nav-avatar" id="nav-avatar">M</span>
+            <span class="nav-dot" id="dot-profile" hidden></span>
+        </button>
+    </div>
+    <button class="ios-nav-item nav-search" data-tab="search-tab" title="Search">
+        <svg viewBox="0 0 24 24" width="26" height="26" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </button>`;
+    document.body.insertAdjacentHTML('beforeend', `<div id="create-modal" class="story-modal-overlay" style="display:none;">
+    <div class="story-modal-card" style="width: 340px;">
+        <button class="close-story-btn" data-close-modal="create-modal">✕</button>
+        <h3 class="i18n" data-ar="إنشاء" data-en="Create">Create</h3>
+        <button class="create-option" data-create="photo"><span>🖼️</span><span class="i18n" data-ar="انشر صورة" data-en="Post a photo">Post a photo</span></button>
+        <button class="create-option" data-create="reel"><span>🎬</span><span class="i18n" data-ar="انشر ريل" data-en="Publish a reel">Publish a reel</span></button>
+        <button class="create-option" data-create="story"><span>⭕</span><span class="i18n" data-ar="أضف صورة ستوري" data-en="Add a story photo">Add a story photo</span></button>
+    </div>
+</div>
+<input type="file" id="create-photo-input" accept="image/*" hidden>
+<input type="file" id="create-reel-input" accept="video/*" hidden>`);
+})();
+
+/* ---------- Icons & counts ---------- */
+const svgIcon = (d) => '<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>';
+const ICON = {
+    heart: svgIcon('<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>'),
+    comment: svgIcon('<path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/>'),
+    repost: svgIcon('<polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>'),
+    send: svgIcon('<path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/>')
+};
+function formatCount(n) {
+    n = Number(n) || 0;
+    if (n < 10000) return n.toLocaleString('en-US');
+    const k = n / 1000;
+    return (k >= 100 ? Math.round(k) : String(Math.round(k * 10) / 10)) + (currentLang === 'ar' ? ' ألف' : 'K');
+}
+
+/* ---------- Nav pill ---------- */
+function moveBubbleTo(btn) {
+    const bubble = $('liquid-bubble');
+    const pill = $('nav-pill');
+    if (!bubble || !pill) return;
+    const isSearch = btn.classList.contains('nav-search');
+    bubble.style.opacity = isSearch ? '0' : '1'; // search is its own round button
+    if (isSearch) return;
+    const b = btn.getBoundingClientRect();
+    const r = pill.getBoundingClientRect();
+    if (!b.width) return;
+    bubble.style.width = b.width + 'px';
+    bubble.style.transform = 'translateX(' + (b.left - r.left) + 'px)';
+}
+function updateNavDots() {
+    if (!currentUser) return;
+    const seenMsg = Number(getRaw('ms_seen_msg_' + currentUser.name, '0'));
+    const seenFol = Number(getRaw('ms_seen_fol_' + currentUser.name, '0'));
+    $('dot-chat').hidden = !asArray(load('ms_private_chat', [])).some((m) => m.to === currentUser.name && (m.time || 0) > seenMsg);
+    $('dot-profile').hidden = asArray(currentUser.followersList).length <= seenFol;
+}
+function activateTab(tabId) {
+    if (currentUser) {
+        reloadUsers();
+        renderSuggestions();
+        renderUsersChatList();
+        updateFollowStats();
+        renderSearchResults();
+        if (tabId === 'chat-tab') setRaw('ms_seen_msg_' + currentUser.name, String(Date.now()));
+        if (tabId === 'profile-tab') setRaw('ms_seen_fol_' + currentUser.name, String(asArray(currentUser.followersList).length));
+        updateNavDots();
+    }
+    const btn = document.querySelector('.ios-nav-item[data-tab="' + tabId + '"]');
+    document.querySelectorAll('.ios-nav-item').forEach((b) => b.classList.toggle('active', b === btn));
+    document.querySelectorAll('.ios-tab-pane').forEach((p) => p.classList.toggle('active', p.id === tabId));
+    if (btn) moveBubbleTo(btn);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function renderProfileHeader() {
+    const u = currentUser;
+    $('profile-display-name').textContent = (u.displayName && u.displayName !== u.name) ? u.displayName + ' (@' + u.name + ')' : '@' + u.name;
+    $('profile-email-text').textContent = u.email;
+    $('dm-current-username').textContent = u.name;
+    $('user-avatar-box').innerHTML = avatarHTML(u);
+    $('nav-avatar').innerHTML = avatarHTML(u);
+    const verified = isVerified(u);
+    $('my-badge').style.display = verified ? 'inline-block' : 'none';
+    $('profile-verified-status').style.display = verified ? 'inline-block' : 'none';
+    $('admin-panel-section').style.display = isAdmin(u) ? 'block' : 'none';
+    updateNavDots();
+}
+
+/* ---------- Posts: like / comment / repost / send ---------- */
+function postCardHTML(p) {
+    const au = findUserByName(p.author);
+    const display = (au && au.displayName) || p.displayName || '';
+    const verified = p.verified || verifiedUsers.includes(p.author);
+    const me = currentUser ? currentUser.name : '';
+    const id = esc(p.id);
+    let media = '';
+    if (p.media) {
+        media = p.mediaType === 'video'
+            ? '<video src="' + esc(p.media) + '" controls playsinline class="ios-media"></video>'
+            : '<img src="' + esc(p.media) + '" alt="" class="ios-media">';
+    }
+    const act = (cls, attr, icon, count, on) =>
+        '<button class="act-btn ' + cls + (on ? ' on' : '') + '" data-' + attr + '="' + id + '">' + icon +
+        (count === null ? '' : '<span>' + formatCount(count) + '</span>') + '</button>';
+    const recent = asArray(p.comments).slice(-2).map((c) =>
+        '<div class="post-comment"><strong>@' + esc(c.by) + '</strong> ' + esc(c.text) + '</div>').join('');
+    return '' +
+        '<div class="insta-post-header">' +
+            '<div class="insta-post-user-info">' +
+                '<div class="insta-post-avatar">' + avatarHTML(au || { name: p.author }) + '</div>' +
+                '<div><strong style="font-size: 14px;">@' + esc(p.author) + '</strong> ' + (verified ? '✔️' : '') +
+                (display && display !== p.author ? '<div style="font-size: 11px; color: var(--text-sub);">' + esc(display) + '</div>' : '') +
+                '</div>' +
+            '</div><span>•••</span>' +
+        '</div>' +
+        (p.text ? '<p style="margin: 8px 12px; font-size: 13px;">' + esc(p.text) + '</p>' : '') +
+        media +
+        '<div class="post-actions">' +
+            act('like', 'like', ICON.heart, p.likes || 0, asArray(p.likedBy).includes(me)) +
+            act('cmt', 'comment', ICON.comment, p.commentCount || 0, false) +
+            act('rep', 'repost', ICON.repost, p.repostCount || 0, asArray(p.repostedBy).includes(me)) +
+            act('send', 'send', ICON.send, null, false) +
+        '</div>' + recent;
+}
+
+function renderPosts() {
+    const feed = $('posts-feed');
+    const myFeed = $('my-posts-list');
+    const reels = $('reels-list');
+    feed.innerHTML = '';
+    myFeed.innerHTML = '';
+    reels.innerHTML = '';
+    $('stat-posts-count').textContent = posts.filter((p) => p.author === currentUser.name).length;
+    const card = (p) => {
+        const d = document.createElement('div');
+        d.className = 'insta-post-card';
+        d.innerHTML = postCardHTML(p);
+        return d;
+    };
+    if (posts.length === 0) feed.innerHTML = '<div class="search-empty">' + esc(t('لا توجد منشورات بعد', 'No posts yet')) + '</div>';
+    posts.forEach((p) => {
+        feed.appendChild(card(p));
+        if (p.author === currentUser.name) myFeed.appendChild(card(p));
+        if (p.isReel) reels.appendChild(card(p));
+    });
+    if (!reels.children.length) reels.innerHTML = '<div class="search-empty">' + esc(t('لا توجد ريلز بعد. انشر أول ريل!', 'No reels yet. Publish the first one!')) + '</div>';
+}
+
+function addComment(id) {
+    const p = posts.find((x) => x.id === id);
+    if (!p || !currentUser) return;
+    const txt = prompt(t('اكتب تعليقك:', 'Write a comment:'));
+    if (!txt || !txt.trim()) return;
+    p.comments = asArray(p.comments);
+    p.comments.push({ by: currentUser.name, text: txt.trim().slice(0, 300) });
+    p.commentCount = (p.commentCount || 0) + 1;
+    save('ms_posts', posts);
+    renderPosts();
+}
+function toggleRepost(id) {
+    const p = posts.find((x) => x.id === id);
+    if (!p || !currentUser) return;
+    p.repostedBy = asArray(p.repostedBy);
+    const i = p.repostedBy.indexOf(currentUser.name);
+    if (i > -1) { p.repostedBy.splice(i, 1); p.repostCount = Math.max(0, (p.repostCount || 0) - 1); }
+    else { p.repostedBy.push(currentUser.name); p.repostCount = (p.repostCount || 0) + 1; }
+    save('ms_posts', posts);
+    renderPosts();
+}
+async function sharePost(id) {
+    const p = posts.find((x) => x.id === id);
+    if (!p) return;
+    const text = '@' + p.author + (p.text ? ': ' + p.text : '');
+    try {
+        if (navigator.share) { await navigator.share({ title: 'MS Media', text }); return; }
+        await navigator.clipboard.writeText(text);
+        notify(t('تم نسخ المنشور.', 'Post copied.'));
+    } catch (e) { /* share cancelled */ }
+}
+
+/* ---------- Create: photo / reel / story photo ---------- */
+function startCreate(kind) {
+    closeAllModals();
+    if (kind === 'story') { openStoryStudio(); $('story-file-input').click(); return; }
+    $(kind === 'reel' ? 'create-reel-input' : 'create-photo-input').click();
+}
+async function publishMedia(file, isReel) {
+    if (!file || !currentUser) return;
+    let m;
+    try { m = await prepareMedia(file, 1080); } catch (err) { return notify(err.message); }
+    if (isReel && m.type !== 'video') return notify(t('الريل يجب أن يكون فيديو.', 'A reel must be a video.'));
+    const caption = prompt(t('اكتب وصفاً (اختياري):', 'Write a caption (optional):'), '');
+    if (caption === null) return;
+    posts.unshift({
+        id: makeId(), author: currentUser.name, displayName: currentUser.displayName,
+        text: caption.trim(), media: m.url, mediaType: m.type, isReel: !!isReel,
+        likes: 0, likedBy: [], commentCount: 0, comments: [], repostCount: 0, repostedBy: [], time: Date.now()
+    });
+    if (!save('ms_posts', posts)) { posts.shift(); return; }
+    renderPosts();
+    activateTab(isReel ? 'reels-tab' : 'feed-tab');
+}
+$('create-photo-input').addEventListener('change', (e) => { const f = e.target.files[0]; e.target.value = ''; publishMedia(f, false); });
+$('create-reel-input').addEventListener('change', (e) => { const f = e.target.files[0]; e.target.value = ''; publishMedia(f, true); });
+
+document.addEventListener('click', (e) => {
+    const el = e.target && e.target.closest ? e.target.closest('[data-comment],[data-repost],[data-send],[data-create],[data-open-create]') : null;
+    if (!el) return;
+    const d = el.dataset;
+    if (d.comment) addComment(d.comment);
+    else if (d.repost) toggleRepost(d.repost);
+    else if (d.send) sharePost(d.send);
+    else if (d.create) startCreate(d.create);
+    else if (d.openCreate) $('create-modal').style.display = 'flex';
+});
 
         /* ===================== Boot ===================== */
         applyLanguage(currentLang);
