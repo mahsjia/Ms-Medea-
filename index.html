@@ -374,13 +374,13 @@ function renderSuggestions() {
   $('#suggestions-box').hidden = !others.length;
   $('#suggestions-list').innerHTML = others.map(u => {
     const f = me.followingList.includes(u.name);
-    return `<div class="suggestion-card"><div class="sugg-avatar">${av(u)}</div><strong>@${esc(u.name)}</strong><p class="sub-sm">${t('suggestedTag')}</p><button class="ios-main-btn-sm" data-follow="${esc(u.name)}">${t(f ? 'followingBtn' : 'follow')}</button></div>`;
+    return `<div class="suggestion-card" data-act="inspectUser" data-id="${esc(u.name)}" style="cursor:pointer;"><div class="sugg-avatar">${av(u)}</div><strong>@${esc(u.name)}</strong><p class="sub-sm">${t('suggestedTag')}</p><button class="ios-main-btn-sm" data-follow="${esc(u.name)}" onclick="event.stopPropagation();">${t(f ? 'followingBtn' : 'follow')}</button></div>`;
   }).join('');
 }
 
-// **تحديث دالة صفوف البحث مع ميزة الفحص وزر المتابعة والمراسلة**
+// **إظهار الحسابات أولاً عند البحث والنقر لعرض الملف**
 const userRow = u => `
-  <div class="chat-user-row clickable-user" data-act="inspectUser" data-id="${esc(u.name)}">
+  <div class="chat-user-row clickable-user" data-act="inspectUser" data-id="${esc(u.name)}" style="cursor:pointer;">
     <div class="user-cell">
       <div class="chat-av">${av(u)}</div>
       <div>
@@ -399,11 +399,26 @@ function renderChatUsers() {
   const q = $('#dm-filter-input').value.toLowerCase().trim();
   $('#users-chat-list').innerHTML = users.filter(u => u.name !== me.name && u.name.includes(q)).map(userRow).join('');
 }
+
 const postHTML = (p, i) => {
   const m = p.media ? (p.mediaType === 'video' ? `<video src="${esc(p.media)}" controls class="ios-media"></video>` : `<img src="${esc(p.media)}" class="ios-media" alt="">`) : '';
   const liked = (p.likedBy || []).includes(me.name), own = p.author === me.name || me.email === ADMIN_EMAIL, sv = (me.saved || []).includes(p.id), id = esc(p.id);
-  return `<article class="insta-post-card"><div class="insta-post-header"><div class="insta-post-user-info"><div class="insta-post-avatar">${esc(p.author[0].toUpperCase())}</div><div><strong>@${esc(p.author)}</strong> ${p.verified || verified.includes(p.author) ? '✔️' : ''}${p.displayName ? `<div class="sub-sm">${esc(p.displayName)}</div>` : ''}</div></div><span class="sub-sm">${p.time ? ago(p.time) : ''} ${own ? `<button class="icon-btn" data-act="del" data-id="${id}" aria-label="Delete">🗑</button>` : ''}</span></div><p class="post-text">${fmt(p.text)}</p>${m}<div class="insta-post-actions-bar"><div class="post-icons"><button class="icon-btn" data-like="${i}" aria-label="Like">${liked ? '❤️' : '🤍'}</button><button class="icon-btn" data-act="comments" data-id="${id}" aria-label="Comment">💬<small>${(p.comments || []).length || ''}</small></button><button class="icon-btn" data-act="share" data-id="${id}" aria-label="Share">✈️</button><button class="icon-btn" data-act="bookmark" data-id="${id}" aria-label="Save">${sv ? '🔖' : '📌'}</button></div><span class="likes">${p.likes || 0} ${t('likes')}</span></div></article>`;
+  return `<article class="insta-post-card">
+    <div class="insta-post-header">
+      <div class="insta-post-user-info" data-act="inspectUser" data-id="${esc(p.author)}" style="cursor:pointer;">
+        <div class="insta-post-avatar">${esc(p.author[0].toUpperCase())}</div>
+        <div><strong>@${esc(p.author)}</strong> ${p.verified || verified.includes(p.author) ? '✔️' : ''}${p.displayName ? `<div class="sub-sm">${esc(p.displayName)}</div>` : ''}</div>
+      </div>
+      <span class="sub-sm">${p.time ? ago(p.time) : ''} ${own ? `<button class="icon-btn" data-act="del" data-id="${id}" aria-label="Delete">🗑</button>` : ''}</span>
+    </div>
+    <p class="post-text">${fmt(p.text)}</p>${m}
+    <div class="insta-post-actions-bar">
+      <div class="post-icons"><button class="icon-btn" data-like="${i}" aria-label="Like">${liked ? '❤️' : '🤍'}</button><button class="icon-btn" data-act="comments" data-id="${id}" aria-label="Comment">💬<small>${(p.comments || []).length || ''}</small></button><button class="icon-btn" data-act="share" data-id="${id}" aria-label="Share">✈️</button><button class="icon-btn" data-act="bookmark" data-id="${id}" aria-label="Save">${sv ? '🔖' : '📌'}</button></div>
+      <span class="likes">${p.likes || 0} ${t('likes')}</span>
+    </div>
+  </article>`;
 };
+
 function renderPosts() {
   $('#posts-feed').innerHTML = posts.map(postHTML).join('');
   $('#my-posts-list').innerHTML = posts.map((p, i) => p.author === me.name ? postHTML(p, i) : '').join('');
@@ -424,7 +439,7 @@ function toggleFollow(name) {
   if (i > -1) { f.splice(i, 1); target.followersList = target.followersList.filter(n => n !== me.name); }
   else { f.push(name); target.followersList.push(me.name); notify(name, 'follow'); }
   save('ms_all_users', users); renderStats(); renderSuggestions();
-  if (!$('#user-inspect-card').hidden) inspectUser(name); // تحديث كارت الفحص إذا كان مفتوحاً
+  if (!$('#user-inspect-card').hidden) inspectUser(name);
 }
 function openFollowers(type) {
   const l = me[type === 'followers' ? 'followersList' : 'followingList'];
@@ -459,7 +474,7 @@ $('#publish-story-btn').onclick = () => {
   $('#story-studio-modal').hidden = true; renderStories();
 };
 
-// **منطق البحث وفحص الحسابات**
+// **تعديل البحث: عرض الحسابات المطابقة أولاً، ثم المنشورات تحتها**
 $('#search-input').oninput = e => {
   const q = e.target.value.toLowerCase().trim();
   $('#user-inspect-card').hidden = true;
@@ -468,8 +483,16 @@ $('#search-input').oninput = e => {
     return;
   }
   const matchedUsers = users.filter(u => u.name !== me.name && (u.name.includes(q) || (u.displayName && u.displayName.toLowerCase().includes(q))));
-  $('#search-results').innerHTML = matchedUsers.map(userRow).join('') + 
-    '<div class="ios-feed-list mt-md">' + posts.map((p, i) => p.text.toLowerCase().includes(q) ? postHTML(p, i) : '').join('') + '</div>';
+  const matchedPosts = posts.filter(p => p.text.toLowerCase().includes(q) || p.author.toLowerCase().includes(q));
+
+  let html = '';
+  if (matchedUsers.length) {
+    html += `<div class="ios-section-title">الحسابات</div>` + matchedUsers.map(userRow).join('');
+  }
+  if (matchedPosts.length) {
+    html += `<div class="ios-section-title mt-md">المنشورات</div><div class="ios-feed-list">` + matchedPosts.map((p) => postHTML(p, posts.indexOf(p))).join('') + `</div>`;
+  }
+  $('#search-results').innerHTML = html || emptyP('empty');
 };
 
 function inspectUser(username) {
@@ -495,8 +518,9 @@ function inspectUser(username) {
   const cBtn = $('#inspect-chat-btn');
   cBtn.onclick = () => startChat(target.name);
 
-  $('#inspect-posts-list').innerHTML = targetPosts.map((p, i) => postHTML(p, posts.indexOf(p))).join('') || emptyP('empty');
+  $('#inspect-posts-list').innerHTML = targetPosts.map((p) => postHTML(p, posts.indexOf(p))).join('') || emptyP('empty');
   $('#user-inspect-card').hidden = false;
+  window.scrollTo({ top: $('#user-inspect-card').offsetTop - 60, behavior: 'smooth' });
 }
 
 $('#dm-filter-input').oninput = renderChatUsers;
@@ -588,7 +612,7 @@ function showComments(id) {
 const ACT = {
   comments: showComments,
   addComment(id) {
-    const p = P(id), text = $('#cm-input').value.trim(); if (!p || !text) return;
+    const p = P(id), text = $('#cm-input'].value.trim(); if (!p || !text) return;
     (p.comments ??= []).push({ u: me.name, t: text, time: Date.now() });
     save('ms_posts', posts); notify(p.author, 'comment'); showComments(id); renderPosts();
   },
