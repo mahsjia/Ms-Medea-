@@ -1,0 +1,167 @@
+:root{--accent:#0095f6;--grad:linear-gradient(45deg,#f58529,#dd2a7b,#8134af)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{font:inherit}
+
+body.dark-theme{--bg:#000;--card-bg:rgba(18,18,22,.75);--border-color:rgba(255,255,255,.12);--text-main:#fff;--text-sub:#a8a8a8;--input-bg:rgba(255,255,255,.08)}
+body.light-theme{--bg:#fff;--card-bg:rgba(255,255,255,.85);--border-color:rgba(0,0,0,.08);--text-main:#000;--text-sub:#737373;--input-bg:rgba(0,0,0,.04)}
+
+body{background:var(--bg);color:var(--text-main);min-height:100vh;min-height:100dvh;overflow-x:hidden;transition:background .3s,color .3s}
+
+/* خلفية خفيفة: gradients بدل blur(160px) الثقيل */
+.ios-bg-glow{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.glow-orb{position:absolute;width:420px;height:420px;border-radius:50%;opacity:.3}
+.orb-1{background:radial-gradient(circle,#e1306c,transparent 70%);top:-120px;inset-inline-end:-120px}
+.orb-2{background:radial-gradient(circle,#833ab4,transparent 70%);bottom:-120px;inset-inline-start:-120px}
+
+.ios-card,.suggestion-card,.ios-profile-card,.ios-settings-card,.ios-post-creator,.insta-post-card,.story-modal-card{-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px)}
+
+.ios-card{display:none;background:var(--card-bg);border:1px solid var(--border-color);border-radius:40px;padding:40px 28px;width:min(390px,calc(100% - 32px));margin:8vh auto;box-shadow:0 30px 60px rgba(0,0,0,.5);text-align:center}
+.ios-card.active{display:block}
+.ios-logo-badge{width:80px;height:80px;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af);color:#fff;font-size:30px;font-weight:700;border-radius:28px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 12px 30px rgba(221,42,123,.45)}
+.avatar-preview-ring{width:95px;height:95px;border-radius:50%;padding:3px;margin:0 auto 18px}
+.frame-insta,.ios-avatar-ring{background:var(--grad)}
+.avatar-preview-inner,.ios-avatar-inner,.story-dot{width:100%;height:100%;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--text-main);overflow:hidden}
+.avatar-preview-inner{font-size:28px}
+.ios-card h2{font-size:24px;font-weight:700;margin-bottom:8px}
+.ios-card p,.ios-sub-text{font-size:13px;color:var(--text-sub);margin-bottom:18px}
+
+.ios-input-group{display:flex;flex-direction:column;gap:15px;margin-bottom:22px;text-align:start}
+.ios-input{width:100%;padding:15px 20px;border-radius:22px;border:1px solid var(--border-color);background:var(--input-bg);color:var(--text-main);font-size:15px;outline:none;transition:border-color .2s}
+.ios-input:focus{border-color:var(--accent)}
+.password-wrapper{position:relative}
+.password-wrapper .ios-input{padding-inline-end:50px}
+.password-toggle-btn{position:absolute;inset-inline-end:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text-sub);cursor:pointer;display:flex;padding:4px}
+.password-toggle-btn .ico{width:20px;height:20px}
+.forgot-row{text-align:end;margin-bottom:15px}
+.forgot-row a{font-size:12px;color:var(--accent);text-decoration:none}
+.ios-file-btn{display:block;padding:15px;border-radius:22px;border:1px dashed var(--border-color);background:var(--input-bg);color:var(--text-sub);font-size:13px;cursor:pointer;text-align:center}
+.ios-main-btn{width:100%;padding:16px;border-radius:24px;background:var(--accent);color:#fff;font-weight:600;font-size:16px;border:none;cursor:pointer;box-shadow:0 12px 30px rgba(0,149,246,.4)}
+.ios-main-btn.danger{background:#ff3b30;box-shadow:none}
+.ico{width:24px;height:24px;stroke:currentColor;stroke-width:2;fill:none}
+
+.app-main-screen{display:none}
+.app-main-screen.active{display:block}
+.insta-top-bar{display:flex;justify-content:space-between;align-items:center;padding:16px 22px;padding-top:calc(16px + env(safe-area-inset-top));background:var(--bg);border-bottom:1px solid var(--border-color);position:sticky;top:0;z-index:100}
+.ms-brand{font-size:24px;font-weight:700;letter-spacing:.5px}
+.insta-top-actions{display:flex;gap:18px}
+.insta-top-icon,.icon-btn,.back-btn{background:none;border:none;color:var(--text-main);cursor:pointer;display:flex;align-items:center}
+.ios-main-body{max-width:500px;margin:0 auto;padding:15px 16px calc(110px + env(safe-area-inset-bottom))}
+
+/* animation بدل transition: display:none ما بينفع معه transition */
+.ios-tab-pane{display:none}
+.ios-tab-pane.active{display:block;animation:paneIn .35s cubic-bezier(.16,1,.3,1)}
+@keyframes paneIn{from{opacity:0;transform:translateY(14px) scale(.98)}}
+
+.stories-bar{display:flex;gap:16px;overflow-x:auto;padding:5px 0 18px;margin-bottom:12px;scrollbar-width:none}
+.stories-bar::-webkit-scrollbar,.suggestions-scroll::-webkit-scrollbar{display:none}
+.story-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;flex:none}
+.story-ring{width:72px;height:72px;border-radius:50%;background:var(--grad);padding:2.5px;display:flex}
+.add-story-ring{background:var(--accent)}
+.story-dot{font-size:18px}
+.story-item span{font-size:11px;color:var(--text-sub);max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.story-dot img,.sugg-avatar img,.avatar-preview-inner img,.ios-avatar-inner img,.chat-av img{width:100%;height:100%;object-fit:cover}
+
+.suggestions-section{margin-bottom:20px}
+.suggestions-header{font-size:13px;font-weight:600;color:var(--text-sub);margin-bottom:10px}
+.suggestions-scroll{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none}
+.suggestion-card{min-width:130px;background:var(--card-bg);border:1px solid var(--border-color);border-radius:20px;padding:12px;text-align:center}
+.sugg-avatar,.chat-av{border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;overflow:hidden}
+.sugg-avatar{width:50px;height:50px;margin:0 auto 8px}
+.suggestion-card .ios-main-btn-sm{margin-top:8px;width:100%}
+
+.insta-profile-header{display:flex;align-items:center;justify-content:space-between;padding:12px 5px;margin-bottom:14px}
+.ios-avatar-ring{width:90px;height:90px;border-radius:50%;padding:3px;flex:none}
+.ios-avatar-inner{font-size:30px}
+.insta-profile-stats{display:flex;gap:15px;flex:1;justify-content:space-around;text-align:center}
+.stat-box{display:flex;flex-direction:column;font-size:16px;font-weight:700}
+.stat-box span{font-size:12px;color:var(--text-sub);font-weight:400}
+.clickable-stat{cursor:pointer}
+.clickable-stat:active{transform:scale(.95)}
+.insta-bio-section{margin-bottom:15px;padding:0 5px}
+.insta-bio-section h2{font-size:17px;font-weight:600;overflow-wrap:anywhere}
+.verification-tag{display:inline-block;background:rgba(52,199,89,.18);color:#34c759;font-size:11px;padding:4px 12px;border-radius:14px;font-weight:700;margin-top:8px}
+.insta-action-buttons{display:flex;gap:10px;margin-bottom:20px}
+.insta-btn-alt{flex:1;padding:10px;border-radius:16px;border:1px solid var(--border-color);background:var(--input-bg);color:var(--text-main);font-weight:600;font-size:13px;cursor:pointer}
+
+.ios-profile-card,.ios-settings-card,.ios-post-creator{background:var(--card-bg);border:1px solid var(--border-color);border-radius:34px;padding:24px;margin-bottom:22px}
+.ios-post-creator{border-radius:30px;padding:20px;margin-top:15px}
+.reels-card{text-align:center;padding:60px 20px}
+.mt-lg{margin-top:20px}.mt-md{margin-top:12px}
+.setting-item{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border-color);font-size:14px}
+.ios-setting-btn{padding:8px 16px;border-radius:16px;border:1px solid var(--border-color);background:var(--input-bg);color:var(--text-main);cursor:pointer}
+.ios-section-title{font-size:16px;font-weight:600;margin:20px 0 14px;color:var(--text-sub)}
+.ios-textarea{width:100%;height:85px;padding:14px;border-radius:18px;border:1px solid var(--border-color);background:var(--input-bg);color:var(--text-main);outline:none;font-size:14px;resize:none}
+.ios-post-actions{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.ios-file-upload-sm{font-size:12px;color:var(--accent);font-weight:600;cursor:pointer}
+.ios-main-btn-sm{padding:8px 20px;border-radius:16px;background:var(--accent);color:#fff;border:none;font-weight:600;cursor:pointer;white-space:nowrap}
+
+.ios-feed-list{display:flex;flex-direction:column;gap:22px}
+.insta-post-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:30px;padding:15px 0;overflow:hidden}
+.insta-post-header{display:flex;justify-content:space-between;align-items:center;padding:0 15px 10px}
+.insta-post-user-info{display:flex;align-items:center;gap:10px}
+.insta-post-avatar{width:35px;height:35px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px}
+.sub-sm{font-size:11px;color:var(--text-sub)}
+.post-text{margin:8px 12px;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere}
+.ios-media{display:block;width:100%;max-height:420px;object-fit:cover}
+.insta-post-actions-bar{display:flex;justify-content:space-between;align-items:center;padding:10px 15px 0}
+.post-icons{display:flex;gap:15px}
+.icon-btn{font-size:18px}
+.likes{font-size:13px;font-weight:700}
+
+/* الدردشة (كانت بدون أي CSS في النسخة الأصلية) */
+.dm-header-bar{display:flex;justify-content:space-between;align-items:center;padding:4px 4px 12px}
+.dm-search-bar-wrap{margin-bottom:14px}
+.dm-search-bar-wrap .ios-input{padding:10px 16px;font-size:13px}
+.dm-section-title{font-size:13px;color:var(--text-sub);margin-bottom:10px;font-weight:600}
+.chat-user-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-color)}
+.user-cell{display:flex;align-items:center;gap:12px;min-width:0;overflow-wrap:anywhere}
+.chat-av{width:44px;height:44px;flex:none}
+.chat-main-area{display:flex;flex-direction:column;height:calc(100dvh - 220px);min-height:320px}
+.chat-header-user{display:flex;align-items:center;gap:10px;padding-bottom:10px;font-weight:600}
+.back-btn{font-size:20px}
+[dir=rtl] .back-btn{transform:scaleX(-1)}
+.ios-chat-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:8px 0}
+.ios-msg{max-width:78%;padding:9px 14px;border-radius:20px;font-size:14px;line-height:1.4;overflow-wrap:anywhere;white-space:pre-wrap}
+.ios-msg.mine{align-self:flex-end;background:var(--accent);color:#fff}
+.ios-msg.others{align-self:flex-start;background:var(--input-bg)}
+.ios-chat-input-area{display:flex;align-items:center;gap:8px;padding-top:10px}
+.ios-chat-media-btn{cursor:pointer;font-size:20px}
+.ios-chat-input{flex:1;min-width:0;padding:12px 16px;border-radius:22px;border:1px solid var(--border-color);background:var(--input-bg);color:var(--text-main);outline:none;font-size:14px}
+.ios-send-btn{padding:11px 18px;border-radius:20px;background:var(--accent);color:#fff;border:none;font-weight:600;cursor:pointer}
+
+/* شريط التنقل السفلي */
+.ios-bottom-nav{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:440px;display:flex;padding:8px;z-index:1000;border-radius:38px;-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);box-shadow:0 20px 40px rgba(0,0,0,.35);transition:transform .4s cubic-bezier(.16,1,.3,1),opacity .4s}
+body.light-theme .ios-bottom-nav{background:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.3)}
+body.dark-theme .ios-bottom-nav{background:rgba(30,30,35,.65);border:1px solid rgba(255,255,255,.15)}
+.ios-bottom-nav.nav-hidden{transform:translate(-50%,150px);opacity:0;pointer-events:none}
+.liquid-bubble{position:absolute;top:6px;bottom:6px;left:0;width:60px;border-radius:30px;transition:transform .45s cubic-bezier(.25,1,.5,1),width .3s;z-index:1}
+body.light-theme .liquid-bubble{background:rgba(255,255,255,.9);box-shadow:0 8px 20px rgba(0,0,0,.15),inset 0 1px 1px #fff}
+body.dark-theme .liquid-bubble{background:rgba(255,255,255,.22);box-shadow:0 8px 20px rgba(0,0,0,.4),inset 0 1px 1px rgba(255,255,255,.3)}
+.ios-nav-item{position:relative;background:none;border:none;color:#6c6c70;cursor:pointer;flex:1;height:48px;display:flex;align-items:center;justify-content:center;z-index:2;transition:color .3s,transform .2s}
+body.dark-theme .ios-nav-item{color:#98989f}
+.ios-nav-item.active{color:#000;transform:scale(1.05)}
+body.dark-theme .ios-nav-item.active{color:#fff}
+
+.story-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px}
+.story-modal-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:36px;padding:35px 25px;width:min(380px,100%);max-height:90vh;max-height:90dvh;overflow-y:auto;text-align:center;position:relative}
+.story-modal-card h3{margin-bottom:15px}
+.close-story-btn{position:absolute;top:15px;inset-inline-end:15px;background:none;border:none;color:var(--text-main);font-size:18px;cursor:pointer}
+.story-canvas{width:100%;height:220px;border-radius:20px;display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;font-weight:700;font-size:18px;overflow-wrap:anywhere}
+.bg-grad-1{background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af)}
+.empty{padding:15px;text-align:center}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ميزات جديدة */
+.notif-btn{position:relative}
+.badge{position:absolute;top:-6px;inset-inline-end:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#ff3b30;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.tag{color:var(--accent);text-decoration:none}
+#dyn-body{text-align:start}
+.icon-btn small{font-size:12px;margin-inline-start:3px}
+#profile-email-text{white-space:pre-line}
+.insta-action-buttons{flex-wrap:wrap}
+.stars{display:flex;justify-content:center;gap:6px}
+.star{font-size:32px;color:#f5b301}
+.stars-sm{color:#f5b301;font-size:12px}

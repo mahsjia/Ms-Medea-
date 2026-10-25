@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MS Media</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+
+<div class="ios-bg-glow"><div class="glow-orb orb-1"></div><div class="glow-orb orb-2"></div></div>
+
+<!-- تسجيل الدخول -->
+<div id="auth-screen-1" class="ios-card active">
+  <div class="ios-logo-badge">MS</div>
+  <h2 data-i="welcome"></h2>
+  <p data-i="signin"></p>
+  <div class="ios-input-group">
+    <input type="email" id="email-input" class="ios-input" data-ph="email" autocomplete="email">
+    <div class="password-wrapper">
+      <input type="password" id="password-input" class="ios-input" data-ph="password" autocomplete="current-password">
+      <button type="button" id="toggle-password-btn" class="password-toggle-btn" aria-label="Show password">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="forgot-row"><a href="#" id="forgot-password-link" data-i="forgot"></a></div>
+  <button id="next-auth-btn" class="ios-main-btn" data-i="next"></button>
+</div>
+
+<!-- تخصيص الحساب -->
+<div id="auth-screen-2" class="ios-card">
+  <div class="avatar-preview-ring frame-insta"><div class="avatar-preview-inner" id="preview-avatar-box"><span>M</span></div></div>
+  <h2 data-i="custom"></h2>
+  <p data-i="customSub"></p>
+  <div class="ios-input-group">
+    <input type="text" id="name-input" class="ios-input" data-ph="username" autocomplete="off" maxlength="20">
+    <input type="text" id="display-name-input" class="ios-input" data-ph="displayName" autocomplete="off" maxlength="40">
+    <label class="ios-file-btn"><span data-i="avatar"></span><input type="file" id="avatar-file-input" accept="image/*" hidden></label>
+  </div>
+  <button id="login-btn" class="ios-main-btn" data-i="enter"></button>
+</div>
+
+<!-- الشاشة الرئيسية -->
+<div id="main-screen" class="app-main-screen">
+  <header class="insta-top-bar">
+    <div><span class="ms-brand">MS Media</span> <span id="my-badge" hidden>✔️</span></div>
+    <div class="insta-top-actions">
+      <button class="insta-top-icon notif-btn" aria-label="Notifications" data-act="notif"><span id="notif-badge" class="badge" hidden></span><svg class="ico" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+      <button class="insta-top-icon" aria-label="Messages" data-tab="chat-tab"><svg class="ico" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+    </div>
+  </header>
+
+  <main class="ios-main-body">
+    <!-- الرئيسية -->
+    <section id="feed-tab" class="ios-tab-pane active">
+      <div class="stories-bar" id="stories-bar-list"></div>
+      <div class="suggestions-section" id="suggestions-box">
+        <div class="suggestions-header" data-i="suggested"></div>
+        <div class="suggestions-scroll" id="suggestions-list"></div>
+      </div>
+      <div id="posts-feed" class="ios-feed-list"></div>
+    </section>
+
+    <!-- البحث -->
+    <section id="search-tab" class="ios-tab-pane">
+      <div class="ios-profile-card">
+        <input type="text" id="search-input" class="ios-input" data-ph="searchUsers">
+        <div id="search-results" class="mt-md"></div>
+      </div>
+    </section>
+
+    <!-- الريلز -->
+    <section id="reels-tab" class="ios-tab-pane">
+      <div class="ios-profile-card reels-card">
+        <div style="font-size:40px;margin-bottom:15px">⚡</div>
+        <h3 style="font-size:20px;margin-bottom:10px">Reels</h3>
+        <p class="ios-sub-text" data-i="reelsSub"></p>
+      </div>
+    </section>
+
+    <!-- الرسائل -->
+    <section id="chat-tab" class="ios-tab-pane">
+      <div class="dm-header-bar" id="dm-header-bar">
+        <strong id="dm-current-username"></strong>
+      </div>
+      <div class="dm-search-bar-wrap" id="dm-search-wrap"><input type="text" id="dm-filter-input" class="ios-input" data-ph="searchMsgs"></div>
+      <div id="chat-sidebar">
+        <div class="dm-section-title" data-i="dms"></div>
+        <div id="users-chat-list"></div>
+      </div>
+      <div class="chat-main-area" id="chat-main-area" hidden>
+        <div class="chat-header-user"><button id="back-to-users" class="back-btn" aria-label="Back">←</button><span id="active-chat-username"></span></div>
+        <div class="ios-chat-messages" id="chat-messages"></div>
+        <div class="ios-chat-input-area">
+          <input type="text" id="chat-input" class="ios-chat-input" data-ph="msg" autocomplete="off">
+          <button id="send-chat-btn" class="ios-send-btn" data-i="send"></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- الملف الشخصي -->
+    <section id="profile-tab" class="ios-tab-pane">
+      <div class="insta-profile-header">
+        <div class="ios-avatar-ring"><div class="ios-avatar-inner" id="user-avatar-box"></div></div>
+        <div class="insta-profile-stats">
+          <div class="stat-box"><strong id="stat-posts-count">0</strong><span data-i="posts"></span></div>
+          <div class="stat-box clickable-stat" data-followers="followers"><strong id="stat-followers-count">0</strong><span data-i="followers"></span></div>
+          <div class="stat-box clickable-stat" data-followers="following"><strong id="stat-following-count">0</strong><span data-i="following"></span></div>
+        </div>
+      </div>
+      <div class="insta-bio-section">
+        <h2 id="profile-display-name"></h2>
+        <p id="profile-email-text" class="ios-sub-text"></p>
+        <span id="profile-verified-status" class="verification-tag" data-i="verified" hidden></span>
+      </div>
+      <div class="insta-action-buttons">
+        <button class="insta-btn-alt" data-act="editProfile" data-i="editProfile"></button><button class="insta-btn-alt" data-act="feedback" data-i="feedback"></button>
+        <button class="insta-btn-alt" data-open="ios-settings-modal" data-i="settings"></button>
+      </div>
+
+      <div class="ios-post-creator">
+        <div style="font-weight:600;font-size:14px;margin-bottom:10px" data-i="newPost"></div>
+        <textarea id="post-text" class="ios-textarea" data-ph="mind" maxlength="1000"></textarea>
+        <div class="ios-post-actions">
+          <label class="ios-file-upload-sm"><span data-i="media"></span><input type="file" id="post-media" accept="image/*,video/*" hidden></label>
+          <button id="publish-post-btn" class="ios-main-btn-sm" data-i="post"></button>
+        </div>
+      </div>
+
+      <div class="ios-section-title" data-i="myPosts"></div>
+      <div id="my-posts-list" class="ios-feed-list"></div>
+      <div class="ios-section-title" data-i="saved"></div>
+      <div id="saved-list" class="ios-feed-list"></div>
+
+      <div id="admin-panel-section" class="ios-settings-card mt-lg" hidden>
+        <h3>🛡️ <span data-i="adminPanel"></span></h3>
+        <input type="text" id="verify-username-input" class="ios-input mt-md" data-ph="verifyUser">
+        <button id="grant-verify-btn" class="ios-main-btn mt-md" data-i="grant"></button>
+        <div id="fb-list" class="mt-md"></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="ios-bottom-nav" id="bottom-nav-bar">
+    <div class="liquid-bubble" id="liquid-bubble"></div>
+    <button class="ios-nav-item active" data-tab="feed-tab" aria-label="Home"><svg class="ico" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></button>
+    <button class="ios-nav-item" data-tab="search-tab" aria-label="Search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+    <button class="ios-nav-item" data-tab="reels-tab" aria-label="Reels"><svg class="ico" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
+    <button class="ios-nav-item" data-tab="chat-tab" aria-label="Messages"><svg class="ico" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+    <button class="ios-nav-item" data-tab="profile-tab" aria-label="Profile"><svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
+  </nav>
+</div>
+
+<!-- الإعدادات -->
+<div id="ios-settings-modal" class="story-modal-overlay" hidden>
+  <div class="story-modal-card">
+    <button class="close-story-btn" data-close aria-label="Close">✕</button>
+    <h3 data-i="settings"></h3>
+    <div class="setting-item"><span data-i="theme"></span><button id="theme-toggle-btn" class="ios-setting-btn">☀️ / 🌙</button></div>
+    <div class="setting-item"><span data-i="language"></span><button id="lang-toggle-btn" class="ios-setting-btn"></button></div>
+    <div class="setting-item"><button id="logout-btn" class="ios-main-btn danger" data-i="logout"></button></div>
+  </div>
+</div>
+
+<!-- الستوري -->
+<div id="story-studio-modal" class="story-modal-overlay" hidden>
+  <div class="story-modal-card">
+    <button class="close-story-btn" data-close aria-label="Close">✕</button>
+    <h3 data-i="createStory"></h3>
+    <div class="story-canvas bg-grad-1"><span id="story-preview-text" data-i="storyText"></span></div>
+    <input type="text" id="story-text-input" class="ios-input mt-md" data-ph="storyInput" maxlength="120">
+    <button id="publish-story-btn" class="ios-main-btn mt-md" data-i="publishStory"></button>
+  </div>
+</div>
+
+<!-- المتابعون -->
+<div id="followers-modal" class="story-modal-overlay" hidden>
+  <div class="story-modal-card">
+    <button class="close-story-btn" data-close aria-label="Close">✕</button>
+    <h3 id="followers-modal-title"></h3>
+    <div id="followers-modal-list"></div>
+  </div>
+</div>
+
+<!-- نافذة عامة: تعليقات، إشعارات، ملاحظات، تعديل الملف، القصص -->
+<div id="dyn-modal" class="story-modal-overlay" hidden><div class="story-modal-card"><button class="close-story-btn" data-close aria-label="Close">✕</button><h3 id="dyn-title"></h3><div id="dyn-body"></div></div></div>
+
+<script>
+// ---------- أدوات ----------
+const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
+const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { alert(t('full')); } };
+const hash = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, '0')).join('');
+const readFile = f => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(f); });
+
+// ---------- الترجمة ([عربي, English]) ----------
+const T = {
+  feedback:['💬 ملاحظات','💬 Feedback'], fbHint:['رأيك بيساعدنا نطوّر التطبيق. قيّمنا واكتب ملاحظاتك.','Your opinion helps us improve. Rate us and share your notes.'],
+  fbText:['اكتب ملاحظاتك أو اقتراحاتك...','Write your notes or suggestions...'], fbNeed:['اختر تقييماً أو اكتب ملاحظة.','Pick a rating or write a note.'],
+  fbThanks:['شكراً! وصلتنا ملاحظتك 💙','Thanks! We got your feedback 💙'], fbList:['ملاحظات المستخدمين','User feedback'],
+  comments:['التعليقات','Comments'], addComment:['اكتب تعليقاً...','Add a comment...'], noComments:['لا تعليقات بعد، كن أول من يعلّق.','No comments yet. Be the first.'],
+  notifs:['الإشعارات','Notifications'], n_like:['أعجب بمنشورك','liked your post'], n_follow:['بدأ بمتابعتك','started following you'],
+  n_comment:['علّق على منشورك','commented on your post'], n_message:['أرسل لك رسالة','sent you a message'],
+  saved:['المحفوظات','Saved'], bio:['نبذة عنك...','Your bio...'], save:['حفظ','Save'],
+  copied:['تم نسخ المنشور.','Post copied.'], delConfirm:['حذف المنشور؟','Delete this post?'],
+  welcome:['مرحباً بك في MS Media','Welcome to MS Media'], signin:['سجّل دخولك بالبريد وكلمة المرور','Sign in with your email and password'],
+  forgot:['نسيت كلمة المرور؟','Forgot password?'], next:['التالي','Next'],
+  custom:['تخصيص الحساب','Customize Account'], customSub:['اختر اسم المستخدم واسم العرض الاختياري','Choose your username and optional display name'],
+  avatar:['📷 اختيار صورة شخصية','📷 Choose Avatar'], enter:['دخول إلى المنصة','Enter Platform'],
+  yourStory:['قصتك','Your Story'], suggested:['اقتراحات قد تعجبك','Suggested for you'], suggestedTag:['مقترح','Suggested'],
+  reelsSub:['استعرض أحدث مقاطع الفيديو والريلز.','Explore short videos and reels.'], dms:['الرسائل المباشرة','Direct Messages'],
+  send:['إرسال','Send'], posts:['منشورات','Posts'], followers:['المتابعون','Followers'], following:['المتابعة','Following'],
+  editProfile:['تعديل الملف الشخصي','Edit Profile'], settings:['⚙️ الإعدادات','⚙️ Settings'], newPost:['إنشاء منشور جديد','Create New Post'],
+  media:['📷 وسائط','📷 Media'], post:['نشر','Post'], myPosts:['منشوراتي','My Posts'], verified:['موثّق ✔️','Verified ✔️'],
+  adminPanel:['لوحة الإدارة','Admin Panel'], grant:['منح التوثيق ✔️','Grant Verification ✔️'],
+  theme:['المظهر (داكن / فاتح)','Theme (Dark / Light)'], language:['اللغة','Language'], langBtn:['🇺🇸 English','🇸🇦 العربية'], logout:['تسجيل الخروج','Log Out'],
+  createStory:['إنشاء قصة','Create Story'], storyText:['نص القصة...','Story text...'], publishStory:['نشر القصة','Publish Story'],
+  message:['مراسلة','Message'], follow:['متابعة','Follow'], followingBtn:['تتابعه','Following'], likes:['إعجاب','likes'], empty:['القائمة فارغة','List is empty'],
+  email:['البريد الإلكتروني...','Email...'], password:['كلمة المرور...','Password...'], username:['اسم المستخدم (إنجليزي)...','Username (English)...'],
+  displayName:['اسم العرض (اختياري)...','Display name (optional)...'], searchUsers:['ابحث عن مستخدمين...','Search users...'],
+  searchMsgs:['ابحث في الرسائل...','Search messages...'], msg:['اكتب رسالة...','Message...'], mind:['بماذا تفكر؟','What\'s on your mind?'],
+  storyInput:['اكتب نصاً...','Type text...'], verifyUser:['اسم المستخدم للتوثيق...','Username to verify...'],
+  noReset:['استعادة كلمة المرور تحتاج سيرفر، وهي غير متاحة حالياً.','Password reset needs a server and is not available yet.'],
+  badAuth:['أدخل بريداً صحيحاً وكلمة مرور من 6 أحرف على الأقل.','Enter a valid email and a password of at least 6 characters.'],
+  wrongPw:['كلمة المرور غير صحيحة.','Wrong password.'],
+  badName:['اسم المستخدم: 3-20 حرفاً إنجليزياً أو أرقاماً أو _','Username: 3-20 English letters, numbers or _'],
+  taken:['اسم المستخدم مأخوذ.','Username is already taken.'],
+  big:['الملف كبير (الحد 1.5MB).','File is too large (max 1.5MB).'], full:['مساحة التخزين ممتلئة.','Storage is full.']
+};
+let lang = load('ms_lang', 'en'), theme = load('ms_theme', 'dark');
+function t(k) { return T[k][lang === 'ar' ? 0 : 1]; }
+
+function applyTheme() { document.body.className = theme + '-theme'; }
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  $$('[data-i]').forEach(e => e.textContent = t(e.dataset.i));
+  $$('[data-ph]').forEach(e => e.placeholder = t(e.dataset.ph));
+  $('#lang-toggle-btn').textContent = t('langBtn');
+  if (me) renderAll();
+  moveBubble();
+}
+
+// ---------- الحالة ----------
+const ADMIN_EMAIL = 'mahmood@gmail.com', MAX = 1.5e6;
+let users = load('ms_all_users', []), posts = load('ms_posts', []), stories = load('ms_stories', []);
+let msgs = load('ms_private_chat', []), verified = load('ms_verified', ['mahmood']);
+users.forEach(u => { u.followersList ??= []; u.followingList ??= []; });
+let me = users.find(u => u.name === load('ms_session', null)) || null;
+let chatWith = null, avatarData = '', temp = null;
+
+if (!posts.length) {
+  posts = [
+    { author:'fcbarcelona', displayName:'FC Barcelona', verified:true, text:'La convocatòria per al Clàssic #fcbarcelona', media:'', mediaType:'', likes:44200, likedBy:[] },
+    { author:'mll_i1m', displayName:'Mahmood', verified:true, text:'MS Media Glass Clone 🔥', media:'', mediaType:'', likes:1240, likedBy:[] }
+  ];
+  save('ms_posts', posts);
+}
+if (!stories.length) {
+  stories = [{ author:'a_ramziii', icon:'🔥' }, { author:'efhubx', icon:'27' }, { author:'tm15_k22', icon:'⚽' }];
+  save('ms_stories', stories);
+}
+
+posts.forEach((p, i) => { p.id ??= 's' + i; p.time ??= Date.now(); p.comments ??= []; });
+save('ms_posts', posts);
+let notifs = load('ms_notifs', []), feedback = load('ms_feedback', []), fbStars = 0;
+
+// ---------- تسجيل الدخول ----------
+$('#toggle-password-btn').onclick = () => { const i = $('#password-input'); i.type = i.type === 'password' ? 'text' : 'password'; };
+$('#forgot-password-link').onclick = e => { e.preventDefault(); alert(t('noReset')); };
+$('#avatar-file-input').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return;
+  if (f.size > MAX) return alert(t('big'));
+  avatarData = await readFile(f);
+  $('#preview-avatar-box').innerHTML = `<img src="${avatarData}" alt="">`;
+};
+$('#next-auth-btn').onclick = async () => {
+  const email = $('#email-input').value.trim().toLowerCase(), pw = $('#password-input').value;
+  if (!/^\S+@\S+\.\S+$/.test(email) || pw.length < 6) return alert(t('badAuth'));
+  const passHash = await hash(pw), u = users.find(x => x.email === email);
+  if (u) {
+    if (u.passHash && u.passHash !== passHash) return alert(t('wrongPw'));
+    if (!u.passHash) { u.passHash = passHash; save('ms_all_users', users); }
+    return login(u);
+  }
+  temp = { email, passHash };
+  $('#auth-screen-1').classList.remove('active');
+  $('#auth-screen-2').classList.add('active');
+};
+$('#login-btn').onclick = () => {
+  const name = $('#name-input').value.trim().toLowerCase();
+  if (!/^[a-z0-9_]{3,20}$/.test(name)) return alert(t('badName'));
+  if (users.some(u => u.name === name)) return alert(t('taken'));
+  const u = { ...temp, name, displayName: $('#display-name-input').value.trim() || name, avatar: avatarData, followersList: [], followingList: [] };
+  users.push(u); save('ms_all_users', users); login(u);
+};
+$('#logout-btn').onclick = () => { localStorage.removeItem('ms_session'); location.reload(); };
+function login(u) { me = u; save('ms_session', u.name); initApp(); }
+
+function initApp() {
+  $('#auth-screen-1').classList.remove('active');
+  $('#auth-screen-2').classList.remove('active');
+  $('#main-screen').classList.add('active');
+  const isV = verified.includes(me.name);
+  refreshProfile();
+  $('#dm-current-username').textContent = me.name;
+  $('#user-avatar-box').innerHTML = me.avatar ? `<img src="${esc(me.avatar)}" alt="">` : `<span>${esc(me.name[0].toUpperCase())}</span>`;
+  $('#my-badge').hidden = $('#profile-verified-status').hidden = !isV;
+  $('#admin-panel-section').hidden = me.email !== ADMIN_EMAIL;
+  renderAll();
+  requestAnimationFrame(moveBubble);
+}
+
+// ---------- التنقل ----------
+function moveBubble() {
+  const b = $('.ios-nav-item.active'), bb = $('#liquid-bubble');
+  if (!b || !b.offsetWidth) return;
+  bb.style.width = b.offsetWidth + 'px';
+  bb.style.transform = `translateX(${b.offsetLeft}px)`;
+}
+function go(tab) {
+  $$('.ios-nav-item').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  $$('.ios-tab-pane').forEach(p => p.classList.toggle('active', p.id === tab));
+  moveBubble();
+  scrollTo({ top: 0, behavior: 'smooth' });
+}
+addEventListener('resize', moveBubble);
+let lastY = 0;
+addEventListener('scroll', () => {
+  const y = Math.max(scrollY, 0);
+  $('#bottom-nav-bar').classList.toggle('nav-hidden', y > lastY && y > 50);
+  lastY = y;
+}, { passive: true });
+
+// ---------- العرض ----------
+const av = u => u.avatar ? `<img src="${esc(u.avatar)}" alt="">` : esc(u.name[0].toUpperCase());
+function renderAll() { renderStats(); renderStories(); renderSuggestions(); renderChatUsers(); renderPosts(); renderNotifBadge(); renderFeedback(); }
+function renderStats() {
+  $('#stat-followers-count').textContent = me.followersList.length;
+  $('#stat-following-count').textContent = me.followingList.length;
+  $('#stat-posts-count').textContent = posts.filter(p => p.author === me.name).length;
+}
+function renderStories() {
+  $('#stories-bar-list').innerHTML =
+    `<div class="story-item" data-open="story-studio-modal"><div class="story-ring add-story-ring"><div class="story-dot">+</div></div><span>${t('yourStory')}</span></div>` +
+    stories.filter(s => !s.time || Date.now() - s.time < 864e5).map(s => `<div class="story-item" data-act="story" data-id="${esc(s.author)}"><div class="story-ring"><div class="story-dot">${s.avatar ? `<img src="${esc(s.avatar)}" alt="">` : esc(s.icon || s.author[0].toUpperCase())}</div></div><span>@${esc(s.author)}</span></div>`).join('');
+}
+function renderSuggestions() {
+  const others = users.filter(u => u.name !== me.name);
+  $('#suggestions-box').hidden = !others.length;
+  $('#suggestions-list').innerHTML = others.map(u => {
+    const f = me.followingList.includes(u.name);
+    return `<div class="suggestion-card"><div class="sugg-avatar">${av(u)}</div><strong>@${esc(u.name)}</strong><p class="sub-sm">${t('suggestedTag')}</p><button class="ios-main-btn-sm" data-follow="${esc(u.name)}">${t(f ? 'followingBtn' : 'follow')}</button></div>`;
+  }).join('');
+}
+const userRow = u => `<div class="chat-user-row"><div class="user-cell"><div class="chat-av">${av(u)}</div><strong>@${esc(u.name)}</strong></div><button class="ios-main-btn-sm" data-chat="${esc(u.name)}">${t('message')}</button></div>`;
+function renderChatUsers() {
+  const q = $('#dm-filter-input').value.toLowerCase().trim();
+  $('#users-chat-list').innerHTML = users.filter(u => u.name !== me.name && u.name.includes(q)).map(userRow).join('');
+}
+const postHTML = (p, i) => {
+  const m = p.media ? (p.mediaType === 'video' ? `<video src="${esc(p.media)}" controls class="ios-media"></video>` : `<img src="${esc(p.media)}" class="ios-media" alt="">`) : '';
+  const liked = (p.likedBy || []).includes(me.name), own = p.author === me.name || me.email === ADMIN_EMAIL, sv = (me.saved || []).includes(p.id), id = esc(p.id);
+  return `<article class="insta-post-card"><div class="insta-post-header"><div class="insta-post-user-info"><div class="insta-post-avatar">${esc(p.author[0].toUpperCase())}</div><div><strong>@${esc(p.author)}</strong> ${p.verified || verified.includes(p.author) ? '✔️' : ''}${p.displayName ? `<div class="sub-sm">${esc(p.displayName)}</div>` : ''}</div></div><span class="sub-sm">${p.time ? ago(p.time) : ''} ${own ? `<button class="icon-btn" data-act="del" data-id="${id}" aria-label="Delete">🗑</button>` : ''}</span></div><p class="post-text">${fmt(p.text)}</p>${m}<div class="insta-post-actions-bar"><div class="post-icons"><button class="icon-btn" data-like="${i}" aria-label="Like">${liked ? '❤️' : '🤍'}</button><button class="icon-btn" data-act="comments" data-id="${id}" aria-label="Comment">💬<small>${(p.comments || []).length || ''}</small></button><button class="icon-btn" data-act="share" data-id="${id}" aria-label="Share">✈️</button><button class="icon-btn" data-act="bookmark" data-id="${id}" aria-label="Save">${sv ? '🔖' : '📌'}</button></div><span class="likes">${p.likes || 0} ${t('likes')}</span></div></article>`;
+};
+function renderPosts() {
+  $('#posts-feed').innerHTML = posts.map(postHTML).join('');
+  $('#my-posts-list').innerHTML = posts.map((p, i) => p.author === me.name ? postHTML(p, i) : '').join('');
+  $('#saved-list').innerHTML = posts.map((p, i) => (me.saved || []).includes(p.id) ? postHTML(p, i) : '').join('');
+  renderReels();
+}
+
+// ---------- الإجراءات ----------
+function likePost(i) {
+  const p = posts[i], l = p.likedBy ??= [], j = l.indexOf(me.name);
+  j > -1 ? l.splice(j, 1) : l.push(me.name);
+  p.likes = Math.max(0, (p.likes || 0) + (j > -1 ? -1 : 1));
+  if (j < 0) notify(p.author, 'like');
+  save('ms_posts', posts); renderPosts();
+}
+function toggleFollow(name) {
+  const f = me.followingList, i = f.indexOf(name), target = users.find(u => u.name === name);
+  if (!target) return;
+  if (i > -1) { f.splice(i, 1); target.followersList = target.followersList.filter(n => n !== me.name); }
+  else { f.push(name); target.followersList.push(me.name); notify(name, 'follow'); }
+  save('ms_all_users', users); renderStats(); renderSuggestions();
+}
+function openFollowers(type) {
+  const l = me[type === 'followers' ? 'followersList' : 'followingList'];
+  $('#followers-modal-title').textContent = t(type);
+  $('#followers-modal-list').innerHTML = l.length
+    ? l.map(n => `<div class="chat-user-row"><span>@${esc(n)}</span><button class="ios-main-btn-sm" data-chat="${esc(n)}">${t('message')}</button></div>`).join('')
+    : `<p class="ios-sub-text empty">${t('empty')}</p>`;
+  $('#followers-modal').hidden = false;
+}
+
+$('#publish-post-btn').onclick = async () => {
+  const text = $('#post-text').value.trim(), f = $('#post-media').files[0];
+  if (!text && !f) return;
+  if (f && f.size > MAX) return alert(t('big'));
+  posts.unshift({ id: 'p' + Date.now(), time: Date.now(), comments: [], author: me.name, displayName: me.displayName, text, media: f ? await readFile(f) : '',
+    mediaType: f ? (f.type.startsWith('video') ? 'video' : 'image') : '', likes: 0, likedBy: [] });
+  save('ms_posts', posts);
+  $('#post-text').value = ''; $('#post-media').value = '';
+  renderPosts(); renderStats();
+};
+$('#grant-verify-btn').onclick = () => {
+  if (me.email !== ADMIN_EMAIL) return;
+  const n = $('#verify-username-input').value.trim().toLowerCase();
+  if (!n || verified.includes(n)) return;
+  verified.push(n); save('ms_verified', verified); alert(`@${n} ✔️`); renderPosts();
+};
+
+$('#story-text-input').oninput = e => $('#story-preview-text').textContent = e.target.value || t('storyText');
+$('#publish-story-btn').onclick = () => {
+  stories.unshift({ time: Date.now(), author: me.name, avatar: me.avatar, icon: me.avatar ? '' : me.name[0].toUpperCase(), text: $('#story-text-input').value.trim() });
+  save('ms_stories', stories);
+  $('#story-studio-modal').hidden = true; renderStories();
+};
+
+$('#search-input').oninput = e => {
+  const q = e.target.value.toLowerCase().trim();
+  $('#search-results').innerHTML = q ? users.filter(u => u.name !== me.name && u.name.includes(q)).map(userRow).join('') + '<div class="ios-feed-list mt-md">' + posts.map((p, i) => p.text.toLowerCase().includes(q) ? postHTML(p, i) : '').join('') + '</div>' : '';
+};
+$('#dm-filter-input').oninput = renderChatUsers;
+
+// ---------- الدردشة ----------
+function chatView(open) {
+  ['chat-sidebar', 'dm-header-bar', 'dm-search-wrap'].forEach(id => $('#' + id).hidden = open);
+  $('#chat-main-area').hidden = !open;
+}
+function startChat(name) {
+  chatWith = name;
+  $('#active-chat-username').textContent = '@' + name;
+  chatView(true); renderMsgs(); go('chat-tab');
+}
+$('#back-to-users').onclick = () => { chatWith = null; chatView(false); };
+function renderMsgs() {
+  const box = $('#chat-messages'); box.replaceChildren();
+  msgs.filter(m => (m.from === me.name && m.to === chatWith) || (m.from === chatWith && m.to === me.name)).forEach(m => {
+    const d = document.createElement('div');
+    d.className = 'ios-msg ' + (m.from === me.name ? 'mine' : 'others');
+    d.textContent = m.text; // textContent = آمن من XSS
+    box.append(d);
+  });
+  box.scrollTop = box.scrollHeight;
+}
+$('#send-chat-btn').onclick = () => {
+  const i = $('#chat-input'), text = i.value.trim();
+  if (!text || !chatWith) return;
+  msgs.push({ from: me.name, to: chatWith, text, time: Date.now() }); notify(chatWith, 'message');
+  save('ms_private_chat', msgs); i.value = ''; renderMsgs();
+};
+$('#chat-input').onkeydown = e => e.key === 'Enter' && $('#send-chat-btn').click();
+
+// ---------- الإعدادات ----------
+$('#theme-toggle-btn').onclick = () => { theme = theme === 'dark' ? 'light' : 'dark'; save('ms_theme', theme); applyTheme(); };
+$('#lang-toggle-btn').onclick = () => { lang = lang === 'en' ? 'ar' : 'en'; save('ms_lang', lang); applyLang(); };
+
+// ---------- مستمع واحد للنقرات (بدل onclick داخل الـ HTML) ----------
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('story-modal-overlay')) e.target.hidden = true;
+  const b = e.target.closest('[data-like],[data-follow],[data-chat],[data-tab],[data-open],[data-close],[data-followers],[data-act]');
+  if (!b) return;
+  const d = b.dataset;
+  if (d.act) return ACT[d.act]?.(d.id, b);
+  if (d.like !== undefined) likePost(+d.like);
+  else if (d.follow) toggleFollow(d.follow);
+  else if (d.chat) { b.closest('.story-modal-overlay')?.setAttribute('hidden', ''); startChat(d.chat); }
+  else if (d.tab) go(d.tab);
+  else if (d.open) $('#' + d.open).hidden = false;
+  else if (d.close !== undefined) b.closest('.story-modal-overlay').hidden = true;
+  else if (d.followers) openFollowers(d.followers);
+});
+
+// ---------- ميزات جديدة ----------
+const P = id => posts.find(p => p.id === id);
+const fmt = s => esc(s).replace(/(^|\s)#([\p{L}\p{N}_]+)/gu, '$1<a class="tag" data-act="tag" data-id="$2">#$2</a>');
+const ago = ts => {
+  const s = (ts - Date.now()) / 1000, a = Math.abs(s), r = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' });
+  return a < 60 ? r.format(0, 'second') : a < 3600 ? r.format(Math.round(s / 60), 'minute') : a < 86400 ? r.format(Math.round(s / 3600), 'hour') : r.format(Math.round(s / 86400), 'day');
+};
+const openDyn = (title, html) => { $('#dyn-title').textContent = title; $('#dyn-body').innerHTML = html; $('#dyn-modal').hidden = false; };
+const emptyP = k => `<p class="ios-sub-text empty">${t(k)}</p>`;
+
+function refreshProfile() {
+  $('#profile-display-name').textContent = `${me.displayName} (@${me.name})`;
+  $('#profile-email-text').textContent = (me.bio ? me.bio + '\n' : '') + me.email;
+}
+function notify(to, type) {
+  if (to === me.name || notifs.some(n => n.to === to && n.from === me.name && n.type === type && !n.read)) return;
+  notifs.unshift({ to, from: me.name, type, time: Date.now(), read: false });
+  notifs = notifs.slice(0, 200); save('ms_notifs', notifs);
+}
+function renderNotifBadge() {
+  const n = notifs.filter(x => x.to === me.name && !x.read).length, b = $('#notif-badge');
+  b.hidden = !n; b.textContent = n;
+}
+function renderFeedback() {
+  $('#fb-list').innerHTML = me.email !== ADMIN_EMAIL ? '' :
+    `<div class="dm-section-title">${t('fbList')} (${feedback.length})</div>` +
+    feedback.map(f => `<div class="chat-user-row"><div><strong>@${esc(f.user)}</strong> <span class="stars-sm">${'★'.repeat(f.stars)}</span><div class="post-text" style="margin:2px 0 0">${esc(f.text)}</div></div></div>`).join('');
+}
+function renderReels() {
+  const v = posts.map((p, i) => p.mediaType === 'video' ? postHTML(p, i) : '').join('');
+  $('#reels-tab').innerHTML = v ? `<div class="ios-feed-list">${v}</div>` :
+    `<div class="ios-profile-card reels-card"><div style="font-size:40px;margin-bottom:15px">⚡</div><h3>Reels</h3><p class="ios-sub-text">${t('reelsSub')}</p></div>`;
+}
+function showComments(id) {
+  const p = P(id); if (!p) return;
+  openDyn(t('comments'), `<div>${(p.comments || []).map(c => `<div class="chat-user-row"><div><strong>@${esc(c.u)}</strong> <span class="sub-sm">${ago(c.time)}</span><div class="post-text" style="margin:2px 0 0">${esc(c.t)}</div></div></div>`).join('') || emptyP('noComments')}</div>` +
+    `<div class="ios-chat-input-area"><input id="cm-input" class="ios-chat-input" maxlength="300" placeholder="${t('addComment')}"><button class="ios-send-btn" data-act="addComment" data-id="${esc(id)}">${t('send')}</button></div>`);
+}
+
+const ACT = {
+  comments: showComments,
+  addComment(id) {
+    const p = P(id), text = $('#cm-input').value.trim(); if (!p || !text) return;
+    (p.comments ??= []).push({ u: me.name, t: text, time: Date.now() });
+    save('ms_posts', posts); notify(p.author, 'comment'); showComments(id); renderPosts();
+  },
+  notif() {
+    const mine = notifs.filter(n => n.to === me.name);
+    openDyn(t('notifs'), mine.map(n => `<div class="chat-user-row"><span><strong>@${esc(n.from)}</strong> ${t('n_' + n.type)}</span><span class="sub-sm">${ago(n.time)}</span></div>`).join('') || emptyP('empty'));
+    mine.forEach(n => n.read = true); save('ms_notifs', notifs); renderNotifBadge();
+  },
+  editProfile() {
+    openDyn(t('editProfile'), `<div class="ios-input-group"><input id="ep-name" class="ios-input" maxlength="40" value="${esc(me.displayName)}"><textarea id="ep-bio" class="ios-textarea" maxlength="150" placeholder="${t('bio')}">${esc(me.bio || '')}</textarea></div><button class="ios-main-btn" data-act="saveProfile">${t('save')}</button>`);
+  },
+  saveProfile() {
+    me.displayName = $('#ep-name').value.trim() || me.name; me.bio = $('#ep-bio').value.trim();
+    save('ms_all_users', users); refreshProfile(); $('#dyn-modal').hidden = true;
+  },
+  feedback() {
+    fbStars = 0;
+    openDyn(t('feedback'), `<p class="ios-sub-text">${t('fbHint')}</p><div class="stars">${[1,2,3,4,5].map(n => `<button class="icon-btn star" data-act="star" data-id="${n}">☆</button>`).join('')}</div><textarea id="fb-text" class="ios-textarea mt-md" maxlength="500" placeholder="${t('fbText')}"></textarea><button class="ios-main-btn mt-md" data-act="sendFeedback">${t('send')}</button>`);
+  },
+  star(n) { fbStars = +n; $$('.star').forEach(s => s.textContent = +s.dataset.id <= fbStars ? '★' : '☆'); },
+  sendFeedback() {
+    const text = $('#fb-text').value.trim();
+    if (!fbStars && !text) return alert(t('fbNeed'));
+    feedback.unshift({ user: me.name, stars: fbStars, text, time: Date.now() });
+    save('ms_feedback', feedback); $('#dyn-modal').hidden = true; alert(t('fbThanks')); renderFeedback();
+  },
+  bookmark(id) {
+    const s = me.saved ??= [], i = s.indexOf(id);
+    i > -1 ? s.splice(i, 1) : s.push(id); save('ms_all_users', users); renderPosts();
+  },
+  del(id) {
+    if (!confirm(t('delConfirm'))) return;
+    posts = posts.filter(p => p.id !== id); save('ms_posts', posts); renderPosts(); renderStats();
+  },
+  share(id) {
+    const p = P(id); if (!p) return;
+    const txt = `@${p.author}: ${p.text}`;
+    if (navigator.share) navigator.share({ title: 'MS Media', text: txt }).catch(() => {});
+    else navigator.clipboard?.writeText(txt).then(() => alert(t('copied')));
+  },
+  tag(tag) {
+    go('search-tab'); const i = $('#search-input'); i.value = '#' + tag; i.dispatchEvent(new Event('input'));
+  },
+  story(author) {
+    const s = stories.find(x => x.author === author); if (!s) return;
+    openDyn('@' + author, `<div class="story-canvas bg-grad-1">${s.avatar && !s.text ? `<img src="${esc(s.avatar)}" alt="" style="width:80px;height:80px;border-radius:50%;object-fit:cover">` : esc(s.text || s.icon || author[0].toUpperCase())}</div>`);
+    setTimeout(() => { if ($('#dyn-title').textContent === '@' + author) $('#dyn-modal').hidden = true; }, 5000);
+  }
+};
+
+// ---------- تشغيل ----------
+applyTheme();
+if (me) initApp();
+applyLang();
+</script>
+</body>
+</html>
