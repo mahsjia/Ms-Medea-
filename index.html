@@ -63,40 +63,38 @@
     </section>
 
     <!-- البحث وفحص الحسابات -->
-<section id="search-tab" class="ios-tab-pane">
-  <div class="ios-profile-card">
-    <div style="position: relative; display: flex; align-items: center;">
-      <span style="position: absolute; right: 15px; font-size: 18px; pointer-events: none; opacity: 0.6;">🔍</span>
-      <input type="text" id="search-input" class="ios-input" data-ph="searchUsers" style="padding-right: 40px;">
-    </div>
-    <div id="search-results" class="mt-md"></div>
-  </div>
-
-  <!-- كارت فحص وتفاصيل الحساب عند الضغط عليه -->
-  <div id="user-inspect-card" class="ios-profile-card mt-md" hidden>
-    <div class="insta-profile-header">
-      <div class="ios-avatar-ring"><div class="ios-avatar-inner" id="inspect-avatar-box"></div></div>
-      <div class="insta-profile-stats">
-        <div class="stat-box"><strong id="inspect-posts-count">0</strong><span data-i="posts">منشورات</span></div>
-        <div class="stat-box"><strong id="inspect-followers-count">0</strong><span data-i="followers">المتابعون</span></div>
-        <div class="stat-box"><strong id="inspect-following-count">0</strong><span data-i="following">المتابعة</span></div>
+    <section id="search-tab" class="ios-tab-pane">
+      <div class="ios-profile-card">
+        <div style="position: relative; display: flex; align-items: center;">
+          <span style="position: absolute; right: 15px; font-size: 18px; pointer-events: none; opacity: 0.6;">🔍</span>
+          <input type="text" id="search-input" class="ios-input" data-ph="searchUsers" style="padding-right: 40px;">
+        </div>
+        <div id="search-results" class="mt-md"></div>
       </div>
-    </div>
-    <div class="insta-bio-section mt-sm">
-      <h2 id="inspect-display-name"></h2>
-      <p id="inspect-username-text" class="ios-sub-text"></p>
-      <p id="inspect-bio-text" class="ios-sub-text" style="white-space: pre-line;"></p>
-    </div>
-    <div class="insta-action-buttons mt-md" style="display: flex; gap: 10px;">
-      <button id="inspect-follow-btn" class="ios-main-btn" style="flex: 1;"></button>
-      <button id="inspect-chat-btn" class="insta-btn-alt" style="flex: 1;" data-i="message">مراسلة</button>
-    </div>
-    <div class="ios-section-title mt-lg" data-i="posts">منشورات الحساب</div>
-    <div id="inspect-posts-list" class="ios-feed-list"></div>
-  </div>
-</section>
 
-
+      <!-- كارت فحص وتفاصيل الحساب عند الضغط عليه -->
+      <div id="user-inspect-card" class="ios-profile-card mt-md" hidden>
+        <div class="insta-profile-header">
+          <div class="ios-avatar-ring"><div class="ios-avatar-inner" id="inspect-avatar-box"></div></div>
+          <div class="insta-profile-stats">
+            <div class="stat-box"><strong id="inspect-posts-count">0</strong><span data-i="posts">منشورات</span></div>
+            <div class="stat-box"><strong id="inspect-followers-count">0</strong><span data-i="followers">المتابعون</span></div>
+            <div class="stat-box"><strong id="inspect-following-count">0</strong><span data-i="following">المتابعة</span></div>
+          </div>
+        </div>
+        <div class="insta-bio-section mt-sm">
+          <h2 id="inspect-display-name"></h2>
+          <p id="inspect-username-text" class="ios-sub-text"></p>
+          <p id="inspect-bio-text" class="ios-sub-text" style="white-space: pre-line;"></p>
+        </div>
+        <div class="insta-action-buttons mt-md" style="display: flex; gap: 10px;">
+          <button id="inspect-follow-btn" class="ios-main-btn" style="flex: 1;"></button>
+          <button id="inspect-chat-btn" class="insta-btn-alt" style="flex: 1;" data-i="message">مراسلة</button>
+        </div>
+        <div class="ios-section-title mt-lg" data-i="posts">منشورات الحساب</div>
+        <div id="inspect-posts-list" class="ios-feed-list"></div>
+      </div>
+    </section>
 
     <!-- الريلز -->
     <section id="reels-tab" class="ios-tab-pane">
@@ -301,7 +299,6 @@ $('#avatar-file-input').onchange = async e => {
   $('#preview-avatar-box').innerHTML = `<img src="${avatarData}" alt="">`;
 };
 
-// **إصلاح منع تكرار الحسابات بناءً على البريد الإلكتروني**
 $('#next-auth-btn').onclick = async () => {
   const email = $('#email-input').value.trim().toLowerCase(), pw = $('#password-input').value;
   if (!/^\S+@\S+\.\S+$/.test(email) || pw.length < 6) return alert(t('badAuth'));
@@ -380,7 +377,24 @@ function renderSuggestions() {
     return `<div class="suggestion-card"><div class="sugg-avatar">${av(u)}</div><strong>@${esc(u.name)}</strong><p class="sub-sm">${t('suggestedTag')}</p><button class="ios-main-btn-sm" data-follow="${esc(u.name)}">${t(f ? 'followingBtn' : 'follow')}</button></div>`;
   }).join('');
 }
-const userRow = u => `<div class="chat-user-row"><div class="user-cell"><div class="chat-av">${av(u)}</div><strong>@${esc(u.name)}</strong></div><button class="ios-main-btn-sm" data-chat="${esc(u.name)}">${t('message')}</button></div>`;
+
+// **تحديث دالة صفوف البحث مع ميزة الفحص وزر المتابعة والمراسلة**
+const userRow = u => `
+  <div class="chat-user-row clickable-user" data-act="inspectUser" data-id="${esc(u.name)}">
+    <div class="user-cell">
+      <div class="chat-av">${av(u)}</div>
+      <div>
+        <strong>@${esc(u.name)}</strong>
+        <div class="sub-sm">${esc(u.displayName || u.name)}</div>
+      </div>
+    </div>
+    <div style="display:flex; gap:5px;" onclick="event.stopPropagation();">
+      <button class="ios-main-btn-sm" data-follow="${esc(u.name)}">${t(me.followingList.includes(u.name) ? 'followingBtn' : 'follow')}</button>
+      <button class="ios-main-btn-sm" data-chat="${esc(u.name)}">${t('message')}</button>
+    </div>
+  </div>
+`;
+
 function renderChatUsers() {
   const q = $('#dm-filter-input').value.toLowerCase().trim();
   $('#users-chat-list').innerHTML = users.filter(u => u.name !== me.name && u.name.includes(q)).map(userRow).join('');
@@ -410,6 +424,7 @@ function toggleFollow(name) {
   if (i > -1) { f.splice(i, 1); target.followersList = target.followersList.filter(n => n !== me.name); }
   else { f.push(name); target.followersList.push(me.name); notify(name, 'follow'); }
   save('ms_all_users', users); renderStats(); renderSuggestions();
+  if (!$('#user-inspect-card').hidden) inspectUser(name); // تحديث كارت الفحص إذا كان مفتوحاً
 }
 function openFollowers(type) {
   const l = me[type === 'followers' ? 'followersList' : 'followingList'];
@@ -444,11 +459,46 @@ $('#publish-story-btn').onclick = () => {
   $('#story-studio-modal').hidden = true; renderStories();
 };
 
-// **إصلاح البحث وتصفية الحسابات بدقة**
+// **منطق البحث وفحص الحسابات**
 $('#search-input').oninput = e => {
   const q = e.target.value.toLowerCase().trim();
-  $('#search-results').innerHTML = q ? users.filter(u => u.name !== me.name && u.name.includes(q)).map(userRow).join('') + '<div class="ios-feed-list mt-md">' + posts.map((p, i) => p.text.toLowerCase().includes(q) ? postHTML(p, i) : '').join('') + '</div>' : '';
+  $('#user-inspect-card').hidden = true;
+  if (!q) {
+    $('#search-results').innerHTML = '';
+    return;
+  }
+  const matchedUsers = users.filter(u => u.name !== me.name && (u.name.includes(q) || (u.displayName && u.displayName.toLowerCase().includes(q))));
+  $('#search-results').innerHTML = matchedUsers.map(userRow).join('') + 
+    '<div class="ios-feed-list mt-md">' + posts.map((p, i) => p.text.toLowerCase().includes(q) ? postHTML(p, i) : '').join('') + '</div>';
 };
+
+function inspectUser(username) {
+  const target = users.find(u => u.name === username);
+  if (!target) return;
+
+  const isFollowing = me.followingList.includes(target.name);
+  const targetPosts = posts.filter(p => p.author === target.name);
+
+  $('#inspect-avatar-box').innerHTML = av(target);
+  $('#inspect-display-name').textContent = `${target.displayName || target.name} ${verified.includes(target.name) ? '✔️' : ''}`;
+  $('#inspect-username-text').textContent = `@${target.name}`;
+  $('#inspect-bio-text').textContent = target.bio || '';
+
+  $('#inspect-posts-count').textContent = targetPosts.length;
+  $('#inspect-followers-count').textContent = (target.followersList || []).length;
+  $('#inspect-following-count').textContent = (target.followingList || []).length;
+
+  const fBtn = $('#inspect-follow-btn');
+  fBtn.textContent = t(isFollowing ? 'followingBtn' : 'follow');
+  fBtn.onclick = () => toggleFollow(target.name);
+
+  const cBtn = $('#inspect-chat-btn');
+  cBtn.onclick = () => startChat(target.name);
+
+  $('#inspect-posts-list').innerHTML = targetPosts.map((p, i) => postHTML(p, posts.indexOf(p))).join('') || emptyP('empty');
+  $('#user-inspect-card').hidden = false;
+}
+
 $('#dm-filter-input').oninput = renderChatUsers;
 
 function chatView(open) {
@@ -586,7 +636,8 @@ const ACT = {
     const s = stories.find(x => x.author === author); if (!s) return;
     openDyn('@' + author, `<div class="story-canvas bg-grad-1">${s.avatar && !s.text ? `<img src="${esc(s.avatar)}" alt="" style="width:80px;height:80px;border-radius:50%;object-fit:cover">` : esc(s.text || s.icon || author[0].toUpperCase())}</div>`);
     setTimeout(() => { if ($('#dyn-title').textContent === '@' + author) $('#dyn-modal').hidden = true; }, 5000);
-  }
+  },
+  inspectUser(id) { inspectUser(id); }
 };
 
 applyTheme();
