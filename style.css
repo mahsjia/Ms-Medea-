@@ -4,7 +4,8 @@
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 button{font:inherit}
 
-body.dark-theme{--bg:#000;--card-bg:rgba(18,18,22,.75);--border-color:rgba(255,255,255,.12);--text-main:#fff;--text-sub:#a8a8a8;--input-bg:rgba(255,255,255,.08)}
+/* الداكن هو الافتراضي: ما في فلاش بدون ستايل قبل ما الـ JS يحط الكلاس */
+body,body.dark-theme{--bg:#000;--card-bg:rgba(18,18,22,.75);--border-color:rgba(255,255,255,.12);--text-main:#fff;--text-sub:#a8a8a8;--input-bg:rgba(255,255,255,.08)}
 body.light-theme{--bg:#fff;--card-bg:rgba(255,255,255,.85);--border-color:rgba(0,0,0,.08);--text-main:#000;--text-sub:#737373;--input-bg:rgba(0,0,0,.04)}
 
 body{background:var(--bg);color:var(--text-main);min-height:100vh;min-height:100dvh;overflow-x:hidden;transition:background .3s,color .3s}
@@ -82,7 +83,7 @@ body{background:var(--bg);color:var(--text-main);min-height:100vh;min-height:100
 .insta-bio-section{margin-bottom:15px;padding:0 5px}
 .insta-bio-section h2{font-size:17px;font-weight:600;overflow-wrap:anywhere}
 .verification-tag{display:inline-block;background:rgba(52,199,89,.18);color:#34c759;font-size:11px;padding:4px 12px;border-radius:14px;font-weight:700;margin-top:8px}
-.insta-action-buttons{display:flex;gap:10px;margin-bottom:20px}
+.insta-action-buttons{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
 .insta-btn-alt{flex:1;padding:10px;border-radius:16px;border:1px solid var(--border-color);background:var(--input-bg);color:var(--text-main);font-weight:600;font-size:13px;cursor:pointer}
 
 .ios-profile-card,.ios-settings-card,.ios-post-creator{background:var(--card-bg);border:1px solid var(--border-color);border-radius:34px;padding:24px;margin-bottom:22px}
@@ -110,7 +111,7 @@ body{background:var(--bg);color:var(--text-main);min-height:100vh;min-height:100
 .icon-btn{font-size:18px}
 .likes{font-size:13px;font-weight:700}
 
-/* الدردشة (كانت بدون أي CSS في النسخة الأصلية) */
+/* الدردشة */
 .dm-header-bar{display:flex;justify-content:space-between;align-items:center;padding:4px 4px 12px}
 .dm-search-bar-wrap{margin-bottom:14px}
 .dm-search-bar-wrap .ios-input{padding:10px 16px;font-size:13px}
@@ -131,7 +132,69 @@ body{background:var(--bg);color:var(--text-main);min-height:100vh;min-height:100
 .ios-chat-input{flex:1;min-width:0;padding:12px 16px;border-radius:22px;border:1px solid var(--border-color);background:var(--input-bg);color:var(--text-main);outline:none;font-size:14px}
 .ios-send-btn{padding:11px 18px;border-radius:20px;background:var(--accent);color:#fff;border:none;font-weight:600;cursor:pointer}
 
-/* شريط التنقل السفلي */
+.story-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px}
+.story-modal-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:36px;padding:35px 25px;width:min(380px,100%);max-height:90vh;max-height:90dvh;overflow-y:auto;text-align:center;position:relative}
+.story-modal-card h3{margin-bottom:15px}
+.close-story-btn{position:absolute;top:15px;inset-inline-end:15px;background:none;border:none;color:var(--text-main);font-size:18px;cursor:pointer}
+.story-canvas{width:100%;height:220px;border-radius:20px;display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;font-weight:700;font-size:18px;overflow-wrap:anywhere}
+.bg-grad-1{background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af)}
+.empty{padding:15px;text-align:center}
+
+/* ميزات إضافية */
+.notif-btn{position:relative}
+.badge{position:absolute;top:-6px;inset-inline-end:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#ff3b30;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.tag{color:var(--accent);text-decoration:none}
+#dyn-body{text-align:start}
+.icon-btn small{font-size:12px;margin-inline-start:3px}
+#profile-email-text{white-space:pre-line}
+.stars{display:flex;justify-content:center;gap:6px}
+.star{font-size:32px;color:#f5b301}
+.stars-sm{color:#f5b301;font-size:12px}
+
+/* ============ شريط التنقل السفلي (Liquid Glass) ============
+   حلّ مكان .ios-bottom-nav / .liquid-bubble / .ios-nav-item القديمة (انحذفت).
+   ألوانه تتبع الثيم عبر المتغيرات --nb-* */
+body,body.dark-theme{--nb-bg:rgba(34,36,41,.58);--nb-bd:rgba(255,255,255,.14);--nb-fg:#fff;--nb-sh:0 8px 28px rgba(0,0,0,.4);--nb-edge:rgba(255,255,255,.12);--nb-hi:rgba(255,255,255,.2);--nb-hi-hold:rgba(255,255,255,.32);--nb-hi-edge:rgba(255,255,255,.3);--nb-lens:brightness(1.35) blur(2px);--nb-cut:#1c1e22}
+body.light-theme{--nb-bg:rgba(255,255,255,.72);--nb-bd:rgba(0,0,0,.08);--nb-fg:#000;--nb-sh:0 8px 28px rgba(0,0,0,.15);--nb-edge:rgba(255,255,255,.9);--nb-hi:rgba(0,0,0,.08);--nb-hi-hold:rgba(0,0,0,.15);--nb-hi-edge:rgba(255,255,255,.9);--nb-lens:brightness(.94) blur(2px);--nb-cut:#fff}
+
+/* الشريط القديم يبقى بالـ HTML لأن سكربت الصفحة بيقرأ منه، بس مخفي */
+.ios-bottom-nav{display:none!important}
+/* الشريط الجديد موجود بآخر الـ body: ما يظهر إلا لما الشاشة الرئيسية تكون فعّالة */
+#main-screen:not(.active)~.nb{display:none}
+
+.nb{--pw:calc(min(100vw - 32px,460px) - 64px);position:fixed;left:16px;right:16px;max-width:460px;margin:0 auto;
+  bottom:calc(env(safe-area-inset-bottom,0px) + 14px);height:56px;z-index:50;
+  display:flex;justify-content:space-between;gap:8px;direction:ltr;
+  touch-action:none;user-select:none;-webkit-user-select:none}
+.nb-search,.nb-pill{position:relative;height:56px;border-radius:28px;overflow:hidden;
+  background:var(--nb-bg);border:1px solid var(--nb-bd);
+  -webkit-backdrop-filter:blur(24px) saturate(1.8);backdrop-filter:blur(24px) saturate(1.8);
+  box-shadow:var(--nb-sh),inset 0 1px 0 var(--nb-edge)}
+.nb-search{width:56px;flex:none;display:grid;place-items:center;color:var(--nb-fg);padding:0;cursor:pointer}
+.nb-pill{flex:none;width:var(--pw);transition:width .5s cubic-bezier(.3,1.1,.35,1)}
+.nb.min .nb-pill{width:56px}
+.nb-row{position:absolute;top:0;right:0;height:100%;width:var(--pw);display:flex;
+  transition:transform .5s cubic-bezier(.3,1.1,.35,1)}
+.nb-tab{flex:1;position:relative;display:grid;place-items:center;border:0;background:none;color:var(--nb-fg);
+  padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:opacity .28s,transform .5s cubic-bezier(.3,1.1,.35,1)}
+.nb.min .nb-tab:not(.cur){opacity:0;transform:scale(.4);pointer-events:none}
+.nb svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nb-tab.on svg{fill:currentColor}
+.nb-tab.on .nb-play{fill:var(--nb-cut);stroke:var(--nb-cut)}
+.nb-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#7fb2ff,#3a4a7a);
+  border:1.5px solid var(--nb-fg);display:block}
+.nb-dot{position:absolute;width:9px;height:9px;border-radius:50%;background:#ff2d3d;
+  border:1.5px solid var(--nb-cut);left:calc(50% - 15px);top:calc(50% + 4px)}
+.nb-glass{position:absolute;top:4px;left:0;height:48px;width:48px;border-radius:24px;z-index:3;
+  pointer-events:none;background:var(--nb-hi);
+  box-shadow:inset 0 1px 0 var(--nb-hi-edge),0 2px 12px rgba(0,0,0,.2);
+  -webkit-backdrop-filter:var(--nb-lens);backdrop-filter:var(--nb-lens);
+  transition:background .2s;will-change:transform,width}
+.nb-glass.hold{background:var(--nb-hi-hold)}
+
+/* يشمل الـ nav أيضاً: الـ JS بيعمل الحركة بالنابض وبيحترم RM لحاله */
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 .ios-bottom-nav{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:440px;display:flex;padding:8px;z-index:1000;border-radius:38px;-webkit-backdrop-filter:blur(30px);backdrop-filter:blur(30px);box-shadow:0 20px 40px rgba(0,0,0,.35);transition:transform .4s cubic-bezier(.16,1,.3,1),opacity .4s}
 body.light-theme .ios-bottom-nav{background:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.3)}
 body.dark-theme .ios-bottom-nav{background:rgba(30,30,35,.65);border:1px solid rgba(255,255,255,.15)}
@@ -143,25 +206,5 @@ body.dark-theme .liquid-bubble{background:rgba(255,255,255,.22);box-shadow:0 8px
 body.dark-theme .ios-nav-item{color:#98989f}
 .ios-nav-item.active{color:#000;transform:scale(1.05)}
 body.dark-theme .ios-nav-item.active{color:#fff}
-
-.story-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px}
-.story-modal-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:36px;padding:35px 25px;width:min(380px,100%);max-height:90vh;max-height:90dvh;overflow-y:auto;text-align:center;position:relative}
-.story-modal-card h3{margin-bottom:15px}
-.close-story-btn{position:absolute;top:15px;inset-inline-end:15px;background:none;border:none;color:var(--text-main);font-size:18px;cursor:pointer}
-.story-canvas{width:100%;height:220px;border-radius:20px;display:flex;align-items:center;justify-content:center;padding:20px;color:#fff;font-weight:700;font-size:18px;overflow-wrap:anywhere}
-.bg-grad-1{background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af)}
-.empty{padding:15px;text-align:center}
-
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
-
-/* ميزات جديدة */
-.notif-btn{position:relative}
-.badge{position:absolute;top:-6px;inset-inline-end:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#ff3b30;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
-.tag{color:var(--accent);text-decoration:none}
-#dyn-body{text-align:start}
-.icon-btn small{font-size:12px;margin-inline-start:3px}
-#profile-email-text{white-space:pre-line}
-.insta-action-buttons{flex-wrap:wrap}
-.stars{display:flex;justify-content:center;gap:6px}
-.star{font-size:32px;color:#f5b301}
-.stars-sm{color:#f5b301;font-size:12px}
+.ios-bottom-nav{display:flex!important}
+.nb{display:none!important}
