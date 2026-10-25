@@ -229,6 +229,126 @@
                 <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             </button>
         </nav>
+        <!-- الصق هاد كله مرة وحدة: داخل #main-screen، بعد </nav> تبع الشريط القديم (bottom-nav-bar) مباشرة، وقبل </div> -->
+<nav class="nb" id="nb" aria-label="التنقل">
+  <i class="nb-glass" id="glass"></i>
+  <button class="nb-search" data-i="0" aria-label="بحث">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4.5 4.5"/></svg>
+  </button>
+  <div class="nb-pill" id="pill"><div class="nb-row" id="row">
+    <button class="nb-tab" data-i="1" aria-label="الملف الشخصي"><span class="nb-av"></span><i class="nb-dot" hidden></i></button>
+    <button class="nb-tab" data-i="2" aria-label="الرسائل">
+      <svg viewBox="0 0 24 24"><path d="M22 3 9.2 10.1"/><path d="M11.7 20.3 22 3H2l7.2 7.1z"/></svg><i class="nb-dot" hidden></i></button>
+    <button class="nb-tab" data-i="3" aria-label="ريلز">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><path class="nb-play" d="m10 8.5 6 3.5-6 3.5z" fill="currentColor"/></svg></button>
+    <button class="nb-tab on cur" data-i="4" aria-label="الرئيسية" aria-current="page">
+      <svg viewBox="0 0 24 24"><path d="M12 2.8 3 9.9V20a1 1 0 0 0 1 1h5.5v-6.5h5V21H20a1 1 0 0 0 1-1V9.9z"/></svg></button>
+  </div></div>
+</nav>
+<script>
+(()=>{
+const nb=document.getElementById('nb');if(!nb)return;
+const glass=document.getElementById('glass'),row=document.getElementById('row');
+const tabs=[...nb.querySelectorAll('[data-i]')];
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* الشريط القديم (مخفي) بيضل هو اللي بيبدّل الصفحات: الجديد بيضغط على أزراره */
+const old=document.getElementById('bottom-nav-bar');
+const TABS=['search-tab','profile-tab','chat-tab','reels-tab','feed-tab']; /* 0 بحث · 1 بروفايل · 2 رسائل · 3 ريلز · 4 رئيسية */
+
+const S0=56,G=8;
+let act=4,lastTab=4,min=false,drag=false,hov=4,run=false,last=0,tapMin=false,ly=scrollY,acc=0;
+const P={x:4,w:48,vx:0,vw:0,tx:4,tw:48};
+
+function geo(){const W=nb.clientWidth,pw=W-S0-G,tw=pw/4;
+  const items=[{l:4,w:48}];for(let i=0;i<4;i++)items.push({l:S0+G+i*tw+4,w:tw-8});
+  return{W,pw,tw,items}}
+
+function layout(snap){
+  if(!nb.clientWidth)return;
+  const g=geo(),a=act>0?act:lastTab;
+  nb.style.setProperty('--pw',g.pw+'px');
+  row.style.transform=min?`translateX(${(4-a)*g.tw+g.tw/2-28}px)`:'none';
+  tabs.forEach(t=>{const i=+t.dataset.i;
+    t.classList.toggle('on',i===act);t.classList.toggle('cur',i===a);
+    if(i===act)t.setAttribute('aria-current','page');else t.removeAttribute('aria-current')});
+  const r=act===0?g.items[0]:min?{l:g.W-52,w:48}:g.items[act];
+  P.tx=r.l;P.tw=r.w;if(snap||RM){P.x=P.tx;P.w=P.tw;P.vx=P.vw=0}kick()}
+
+function kick(){if(!run){run=true;last=performance.now();requestAnimationFrame(tick)}}
+function tick(t){const dt=Math.min((t-last)/1000||.016,.032);last=t;
+  for(const[k,v,g]of[['x','vx','tx'],['w','vw','tw']]){P[v]+=(260*(P[g]-P[k])-24*P[v])*dt;P[k]+=P[v]*dt}
+  const st=Math.min(Math.abs(P.vx)/900,.18),h=drag?1.1:1;
+  glass.style.width=P.w+'px';
+  glass.style.transform=`translate3d(${P.x}px,0,0) scale(${(1+st)*h},${(1-st*.6)*h})`;
+  const done=!drag&&Math.abs(P.tx-P.x)<.2&&Math.abs(P.tw-P.w)<.2&&Math.abs(P.vx)<2&&Math.abs(P.vw)<2;
+  if(done){P.x=P.tx;P.w=P.tw;P.vx=P.vw=0;glass.style.width=P.w+'px';glass.style.transform=`translate3d(${P.x}px,0,0)`;run=false}
+  else requestAnimationFrame(tick)}
+
+function setMin(m){if(m===min)return;min=m;nb.classList.toggle('min',m);layout()}
+
+/* تغيير الحالة بدون ما نضغط على الشريط القديم (لما التطبيق يبدّل التاب بنفسه) */
+function setSilent(i){if(i===act)return;act=i;if(i>0)lastTab=i;
+  min=false;nb.classList.remove('min');ly=scrollY;acc=0;layout()}
+
+function activate(i){
+  act=i;if(i>0)lastTab=i;
+  min=false;nb.classList.remove('min');ly=scrollY;acc=0;
+  layout();
+  nb.dispatchEvent(new CustomEvent('navchange',{detail:i}))}
+
+function dragTo(cx){const g=geo(),x=cx-nb.getBoundingClientRect().left;
+  const cand=min?[0,lastTab]:[0,1,2,3,4];
+  const rect=i=>min&&i>0?{l:g.W-52,w:48}:g.items[i];
+  let b=0,bd=1e9;
+  for(const i of cand){const r=rect(i),d=Math.abs(x-(r.l+r.w/2));if(d<bd){bd=d;b=i}}
+  hov=b;const r=rect(b);P.tw=r.w;P.tx=Math.max(0,Math.min(g.W-r.w,x-r.w/2));kick()}
+
+nb.addEventListener('pointerdown',e=>{
+  if(e.button>0)return;
+  if(min&&!e.target.closest('.nb-search')){tapMin=true;return}
+  tapMin=false;drag=true;glass.classList.add('hold');
+  try{nb.setPointerCapture(e.pointerId)}catch(_){}
+  dragTo(e.clientX)});
+nb.addEventListener('pointermove',e=>{if(drag)dragTo(e.clientX)});
+nb.addEventListener('pointerup',()=>{
+  if(tapMin){tapMin=false;setMin(false);return}
+  if(!drag)return;drag=false;glass.classList.remove('hold');activate(hov)});
+nb.addEventListener('pointercancel',()=>{tapMin=drag=false;glass.classList.remove('hold');layout()});
+tabs.forEach(t=>t.addEventListener('click',e=>{if(e.detail===0)activate(+t.dataset.i)}));
+
+addEventListener('scroll',()=>{const y=scrollY,d=y-ly;ly=y;
+  if(y<40){acc=0;setMin(false);return}
+  acc=(d>0)===(acc>0)?acc+d:d;
+  if(acc>14)setMin(true);else if(acc<-10)setMin(false)},{passive:true});
+
+/* شريط جديد -> يضغط زر القديم المقابل (منطق التطبيق الأصلي بيشتغل لحاله) */
+nb.addEventListener('navchange',e=>{const t=TABS[e.detail];
+  const b=old&&old.querySelector('.ios-nav-item[data-tab="'+t+'"]');
+  if(b){b.click();return}
+  document.querySelectorAll('.ios-tab-pane').forEach(p=>p.classList.toggle('active',p.id===t));
+  scrollTo(0,0)});
+
+/* القديم -> الجديد: إذا التطبيق بدّل التاب (مثلاً زر الرسائل فوق) نلحقه */
+function syncOld(){const a=old&&old.querySelector('.ios-nav-item.active');if(!a)return;
+  const i=TABS.indexOf(a.dataset.tab);if(i>-1)setSilent(i)}
+if(old)new MutationObserver(syncOld).observe(old,{subtree:true,attributes:true,attributeFilter:['class']});
+
+/* صورة البروفايل بالشريط = صورة المستخدم إذا موجودة */
+const ab=document.getElementById('user-avatar-box'),av=nb.querySelector('.nb-av');
+function syncAv(){if(!ab||!av)return;const im=ab.querySelector('img');
+  av.style.background=im?'url('+JSON.stringify(im.src)+') center/cover':''}
+if(ab)new MutationObserver(syncAv).observe(ab,{childList:true,subtree:true,attributes:true,attributeFilter:['src']});
+
+if('ResizeObserver'in window)new ResizeObserver(()=>layout(true)).observe(nb);
+else{addEventListener('resize',()=>layout(true))}
+layout(true);syncOld();syncAv();
+
+window.MSNav={go:activate,
+  badge(i,on=true){const d=nb.querySelector('[data-i="'+i+'"] .nb-dot');if(d)d.hidden=!on}};
+})();
+</script>
+
     </div>
 
     <!-- نافذة الإعدادات -->
@@ -1491,6 +1611,14 @@ document.addEventListener('click', (e) => {
             }
         }
     })();
+   
+addEventListener('load',()=>{
+  const bars=document.querySelectorAll('.nb');
+  for(let i=1;i<bars.length;i++)bars[i].remove();
+  const o=document.getElementById('bottom-nav-bar');
+  
+  if(o)o.style.removeProperty('display');
+    });        
     </script>
 </body>
 </html>
