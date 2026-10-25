@@ -183,11 +183,10 @@
   </div>
 </div>
 
-<!-- نافذة عامة: تعليقات، إشعارات، ملاحظات، تعديل الملف، القصص -->
+<!-- نافذة عامة -->
 <div id="dyn-modal" class="story-modal-overlay" hidden><div class="story-modal-card"><button class="close-story-btn" data-close aria-label="Close">✕</button><h3 id="dyn-title"></h3><div id="dyn-body"></div></div></div>
 
 <script>
-// ---------- أدوات ----------
 const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
@@ -195,7 +194,6 @@ const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } cat
 const hash = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, '0')).join('');
 const readFile = f => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(f); });
 
-// ---------- الترجمة ([عربي, English]) ----------
 const T = {
   feedback:['💬 ملاحظات','💬 Feedback'], fbHint:['رأيك بيساعدنا نطوّر التطبيق. قيّمنا واكتب ملاحظاتك.','Your opinion helps us improve. Rate us and share your notes.'],
   fbText:['اكتب ملاحظاتك أو اقتراحاتك...','Write your notes or suggestions...'], fbNeed:['اختر تقييماً أو اكتب ملاحظة.','Pick a rating or write a note.'],
@@ -243,7 +241,6 @@ function applyLang() {
   moveBubble();
 }
 
-// ---------- الحالة ----------
 const ADMIN_EMAIL = 'mahmood@gmail.com', MAX = 1.5e6;
 let users = load('ms_all_users', []), posts = load('ms_posts', []), stories = load('ms_stories', []);
 let msgs = load('ms_private_chat', []), verified = load('ms_verified', ['mahmood']);
@@ -267,7 +264,6 @@ posts.forEach((p, i) => { p.id ??= 's' + i; p.time ??= Date.now(); p.comments ??
 save('ms_posts', posts);
 let notifs = load('ms_notifs', []), feedback = load('ms_feedback', []), fbStars = 0;
 
-// ---------- تسجيل الدخول ----------
 $('#toggle-password-btn').onclick = () => { const i = $('#password-input'); i.type = i.type === 'password' ? 'text' : 'password'; };
 $('#forgot-password-link').onclick = e => { e.preventDefault(); alert(t('noReset')); };
 $('#avatar-file-input').onchange = async e => {
@@ -276,6 +272,8 @@ $('#avatar-file-input').onchange = async e => {
   avatarData = await readFile(f);
   $('#preview-avatar-box').innerHTML = `<img src="${avatarData}" alt="">`;
 };
+
+// **إصلاح منع تكرار الحسابات بناءً على البريد الإلكتروني**
 $('#next-auth-btn').onclick = async () => {
   const email = $('#email-input').value.trim().toLowerCase(), pw = $('#password-input').value;
   if (!/^\S+@\S+\.\S+$/.test(email) || pw.length < 6) return alert(t('badAuth'));
@@ -289,6 +287,7 @@ $('#next-auth-btn').onclick = async () => {
   $('#auth-screen-1').classList.remove('active');
   $('#auth-screen-2').classList.add('active');
 };
+
 $('#login-btn').onclick = () => {
   const name = $('#name-input').value.trim().toLowerCase();
   if (!/^[a-z0-9_]{3,20}$/.test(name)) return alert(t('badName'));
@@ -313,7 +312,6 @@ function initApp() {
   requestAnimationFrame(moveBubble);
 }
 
-// ---------- التنقل ----------
 function moveBubble() {
   const b = $('.ios-nav-item.active'), bb = $('#liquid-bubble');
   if (!b || !b.offsetWidth) return;
@@ -334,7 +332,6 @@ addEventListener('scroll', () => {
   lastY = y;
 }, { passive: true });
 
-// ---------- العرض ----------
 const av = u => u.avatar ? `<img src="${esc(u.avatar)}" alt="">` : esc(u.name[0].toUpperCase());
 function renderAll() { renderStats(); renderStories(); renderSuggestions(); renderChatUsers(); renderPosts(); renderNotifBadge(); renderFeedback(); }
 function renderStats() {
@@ -372,7 +369,6 @@ function renderPosts() {
   renderReels();
 }
 
-// ---------- الإجراءات ----------
 function likePost(i) {
   const p = posts[i], l = p.likedBy ??= [], j = l.indexOf(me.name);
   j > -1 ? l.splice(j, 1) : l.push(me.name);
@@ -420,13 +416,13 @@ $('#publish-story-btn').onclick = () => {
   $('#story-studio-modal').hidden = true; renderStories();
 };
 
+// **إصلاح البحث وتصفية الحسابات بدقة**
 $('#search-input').oninput = e => {
   const q = e.target.value.toLowerCase().trim();
   $('#search-results').innerHTML = q ? users.filter(u => u.name !== me.name && u.name.includes(q)).map(userRow).join('') + '<div class="ios-feed-list mt-md">' + posts.map((p, i) => p.text.toLowerCase().includes(q) ? postHTML(p, i) : '').join('') + '</div>' : '';
 };
 $('#dm-filter-input').oninput = renderChatUsers;
 
-// ---------- الدردشة ----------
 function chatView(open) {
   ['chat-sidebar', 'dm-header-bar', 'dm-search-wrap'].forEach(id => $('#' + id).hidden = open);
   $('#chat-main-area').hidden = !open;
@@ -442,7 +438,7 @@ function renderMsgs() {
   msgs.filter(m => (m.from === me.name && m.to === chatWith) || (m.from === chatWith && m.to === me.name)).forEach(m => {
     const d = document.createElement('div');
     d.className = 'ios-msg ' + (m.from === me.name ? 'mine' : 'others');
-    d.textContent = m.text; // textContent = آمن من XSS
+    d.textContent = m.text;
     box.append(d);
   });
   box.scrollTop = box.scrollHeight;
@@ -455,11 +451,9 @@ $('#send-chat-btn').onclick = () => {
 };
 $('#chat-input').onkeydown = e => e.key === 'Enter' && $('#send-chat-btn').click();
 
-// ---------- الإعدادات ----------
 $('#theme-toggle-btn').onclick = () => { theme = theme === 'dark' ? 'light' : 'dark'; save('ms_theme', theme); applyTheme(); };
 $('#lang-toggle-btn').onclick = () => { lang = lang === 'en' ? 'ar' : 'en'; save('ms_lang', lang); applyLang(); };
 
-// ---------- مستمع واحد للنقرات (بدل onclick داخل الـ HTML) ----------
 document.addEventListener('click', e => {
   if (e.target.classList.contains('story-modal-overlay')) e.target.hidden = true;
   const b = e.target.closest('[data-like],[data-follow],[data-chat],[data-tab],[data-open],[data-close],[data-followers],[data-act]');
@@ -475,7 +469,6 @@ document.addEventListener('click', e => {
   else if (d.followers) openFollowers(d.followers);
 });
 
-// ---------- ميزات جديدة ----------
 const P = id => posts.find(p => p.id === id);
 const fmt = s => esc(s).replace(/(^|\s)#([\p{L}\p{N}_]+)/gu, '$1<a class="tag" data-act="tag" data-id="$2">#$2</a>');
 const ago = ts => {
@@ -568,7 +561,6 @@ const ACT = {
   }
 };
 
-// ---------- تشغيل ----------
 applyTheme();
 if (me) initApp();
 applyLang();
