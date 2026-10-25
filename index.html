@@ -16,6 +16,9 @@
         .mini-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; overflow: hidden; flex-shrink: 0; }
         .chat-media { max-width: 220px; max-height: 260px; border-radius: 14px; display: block; }
         [dir="rtl"] .back-btn { transform: scaleX(-1); }
+        .profile-link { cursor: pointer; }
+        .edit-avatar-preview { width: 96px; height: 96px; font-size: 34px; }
+        textarea.ios-textarea.edit-bio { min-height: 70px; resize: none; }
     </style>
 </head>
 <body class="dark-theme" id="body-theme">
@@ -30,9 +33,9 @@
         <div class="auth-content">
             <div class="ios-logo-badge">MS</div>
             <h2 class="i18n" data-ar="مرحباً بك في MS Media" data-en="Welcome to MS Media">Welcome to MS Media</h2>
-            <p class="i18n" data-ar="سجّل دخولك باستخدام بريدك وكلمة المرور" data-en="Sign in with your email and password">Sign in with your email and password</p>
+            <p class="i18n" data-ar="سجّل دخولك بالبريد أو اسم المستخدم وكلمة المرور" data-en="Sign in with your email or username and password">Sign in with your email or username and password</p>
             <div class="ios-input-group">
-                <input type="email" id="email-input" class="ios-input" placeholder="Email (Gmail)..." data-ph-ar="البريد الإلكتروني (Gmail)..." data-ph-en="Email (Gmail)..." autocomplete="email" autocapitalize="off" spellcheck="false" dir="auto">
+                <input type="text" id="email-input" class="ios-input" placeholder="Email or username..." data-ph-ar="البريد أو اسم المستخدم..." data-ph-en="Email or username..." inputmode="email" autocomplete="username" autocapitalize="off" spellcheck="false" dir="auto">
                 <div class="password-wrapper">
                     <input type="password" id="password-input" class="ios-input" placeholder="Password..." data-ph-ar="كلمة المرور..." data-ph-en="Password..." autocomplete="current-password" dir="auto">
                     <button type="button" id="toggle-password-btn" class="password-toggle-btn" aria-label="Show / hide password">
@@ -473,16 +476,27 @@
 
         async function handleNext() {
             setAuthError('auth-error-1', '');
-            const email = emailInput.value.trim().toLowerCase();
+            const identifier = emailInput.value.trim().toLowerCase();
             const password = passwordInput.value; // never trim a password
-            if (!email || !password) return setAuthError('auth-error-1', t('أدخل البريد وكلمة المرور.', 'Please enter email and password.'));
-            if (!EMAIL_RE.test(email)) return setAuthError('auth-error-1', t('صيغة البريد الإلكتروني غير صحيحة.', 'Invalid email format.'));
+            if (!identifier || !password) return setAuthError('auth-error-1', t('أدخل البريد أو اسم المستخدم وكلمة المرور.', 'Please enter your email or username and password.'));
+
+            // The first field accepts either an email or a username (a leading @ is ignored)
+            const isEmail = EMAIL_RE.test(identifier);
+            const username = identifier.replace(/^@+/, '');
+            if (!isEmail && !USERNAME_RE.test(username)) {
+                return setAuthError('auth-error-1', t('أدخل بريداً صحيحاً أو اسم مستخدم صحيحاً.', 'Enter a valid email or username.'));
+            }
             if (password.length < MIN_PASSWORD) return setAuthError('auth-error-1', t('كلمة المرور يجب ألا تقل عن 6 أحرف.', 'Password must be at least 6 characters.'));
 
             nextAuthBtn.disabled = true;
             try {
                 reloadUsers();
-                const existing = findUserByEmail(email);
+                const email = identifier;
+                const existing = isEmail ? findUserByEmail(email) : findUserByName(username);
+                if (!isEmail && !existing) {
+                    // A new account needs an email, so a username alone cannot start a signup
+                    return setAuthError('auth-error-1', t('لا يوجد حساب بهذا الاسم. لإنشاء حساب جديد استخدم بريدك الإلكتروني.', 'No account with this username. To create a new account, use your email.'));
+                }
                 if (existing) {
                     // Existing account -> verify password and sign in directly
                     if (!existing.passHash) {
