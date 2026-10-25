@@ -1,396 +1,1155 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" id="html-root">
+<html lang="en" dir="ltr" id="html-root">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>MS Media</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MS Media - iOS Liquid Glass</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Styles for elements added in the fixed version only */
+        .auth-error { min-height: 18px; margin: 4px 0 10px; font-size: 12px; color: #ff3b30; text-align: center; }
+        .auth-link-btn { background: none; border: none; color: var(--accent); font-size: 13px; cursor: pointer; margin-top: 12px; }
+        .search-empty { padding: 15px; text-align: center; color: var(--text-sub); font-size: 13px; }
+        .user-result { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 0; }
+        .user-result-main { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .user-result-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .mini-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; overflow: hidden; flex-shrink: 0; }
+        .chat-media { max-width: 220px; max-height: 260px; border-radius: 14px; display: block; }
+        [dir="rtl"] .back-btn { transform: scaleX(-1); }
+    </style>
 </head>
-<body class="dark-theme">
+<body class="dark-theme" id="body-theme">
 
-<div class="ios-bg-glow"><div class="glow-orb orb-1"></div><div class="glow-orb orb-2"></div></div>
-
-<!-- 1. شاشة تسجيل الدخول / إنشاء حساب -->
-<div id="auth-screen-1" class="ios-card active">
-  <div class="ios-logo-badge">MS</div>
-  <h2 data-i="welcome">مرحباً بك في MS Media</h2>
-  <p data-i="signin">سجّل دخولك بالبريد وكلمة المرور</p>
-  <div class="ios-input-group">
-    <input type="email" id="email-input" class="ios-input" placeholder="البريد الإلكتروني..." autocomplete="email">
-    <div class="password-wrapper">
-      <input type="password" id="password-input" class="ios-input" placeholder="كلمة المرور..." autocomplete="current-password">
-      <button type="button" id="toggle-password-btn" class="password-toggle-btn" aria-label="Show password">
-        <svg class="ico" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      </button>
+    <div class="ios-bg-glow">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
     </div>
-  </div>
-  <div class="forgot-row"><a href="#" id="forgot-password-link" data-i="forgot">نسيت كلمة المرور؟</a></div>
-  <button id="next-auth-btn" class="ios-main-btn" data-i="next">التالي</button>
-</div>
 
-<!-- 2. تخصيص الحساب (للمستخدمين الجدد) -->
-<div id="auth-screen-2" class="ios-card">
-  <div class="avatar-preview-ring frame-insta"><div class="avatar-preview-inner" id="preview-avatar-box"><span>M</span></div></div>
-  <h2 data-i="custom">تخصيص الحساب</h2>
-  <p data-i="customSub">اختر اسم المستخدم واسم العرض الاختياري</p>
-  <div class="ios-input-group">
-    <input type="text" id="name-input" class="ios-input" placeholder="اسم المستخدم (إنجليزي)..." autocomplete="off" maxlength="20">
-    <input type="text" id="display-name-input" class="ios-input" placeholder="اسم العرض (اختياري)..." autocomplete="off" maxlength="40">
-    <label class="ios-file-btn"><span data-i="avatar">📷 اختيار صورة شخصية</span><input type="file" id="avatar-file-input" accept="image/*" hidden></label>
-  </div>
-  <button id="login-btn" class="ios-main-btn" data-i="enter">دخول إلى المنصة</button>
-</div>
-
-<!-- 3. الشاشة الرئيسية -->
-<div id="main-screen" class="app-main-screen">
-  <header class="insta-top-bar">
-    <div><span class="ms-brand">MS Media</span> <span id="my-badge" hidden>✔️</span></div>
-    <div class="insta-top-actions">
-      <button class="insta-top-icon notif-btn" aria-label="Notifications" data-act="notif"><span id="notif-badge" class="badge" hidden></span><svg class="ico" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
-      <button class="insta-top-icon" aria-label="Messages" data-tab="chat-tab"><svg class="ico" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+    <!-- شاشة تسجيل الدخول -->
+    <div id="auth-screen-1" class="ios-card active">
+        <div class="auth-content">
+            <div class="ios-logo-badge">MS</div>
+            <h2 class="i18n" data-ar="مرحباً بك في MS Media" data-en="Welcome to MS Media">Welcome to MS Media</h2>
+            <p class="i18n" data-ar="سجّل دخولك باستخدام بريدك وكلمة المرور" data-en="Sign in with your email and password">Sign in with your email and password</p>
+            <div class="ios-input-group">
+                <input type="email" id="email-input" class="ios-input" placeholder="Email (Gmail)..." data-ph-ar="البريد الإلكتروني (Gmail)..." data-ph-en="Email (Gmail)..." autocomplete="email" autocapitalize="off" spellcheck="false" dir="auto">
+                <div class="password-wrapper">
+                    <input type="password" id="password-input" class="ios-input" placeholder="Password..." data-ph-ar="كلمة المرور..." data-ph-en="Password..." autocomplete="current-password" dir="auto">
+                    <button type="button" id="toggle-password-btn" class="password-toggle-btn" aria-label="Show / hide password">
+                        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+                </div>
+            </div>
+            <div style="text-align: end; margin-bottom: 8px;">
+                <a href="#" id="forgot-password-link" class="i18n" data-ar="نسيت كلمة المرور؟" data-en="Forgot password?" style="font-size: 12px; color: var(--accent); text-decoration: none;">Forgot password?</a>
+            </div>
+            <p id="auth-error-1" class="auth-error" role="alert"></p>
+            <button id="next-auth-btn" class="ios-main-btn i18n" data-ar="متابعة" data-en="Continue">Continue</button>
+        </div>
     </div>
-  </header>
 
-  <main class="ios-main-body">
-    <!-- الرئيسية -->
-    <section id="feed-tab" class="ios-tab-pane active">
-      <div class="stories-bar" id="stories-bar-list"></div>
-      <div class="suggestions-section" id="suggestions-box">
-        <div class="suggestions-header" data-i="suggested">اقتراحات قد تعجبك</div>
-        <div class="suggestions-scroll" id="suggestions-list"></div>
-      </div>
-      <div id="posts-feed" class="ios-feed-list"></div>
-    </section>
-
-    <!-- البحث وفحص الحسابات -->
-    <section id="search-tab" class="ios-tab-pane">
-      <div class="ios-profile-card">
-        <div style="position: relative; display: flex; align-items: center;">
-          <span style="position: absolute; right: 15px; font-size: 18px; pointer-events: none; opacity: 0.6;">🔍</span>
-          <input type="text" id="search-input" class="ios-input" placeholder="ابحث عن مستخدمين..." style="padding-right: 40px;">
+    <!-- شاشة تخصيص الحساب -->
+    <div id="auth-screen-2" class="ios-card">
+        <div class="auth-content">
+            <div class="avatar-preview-ring frame-insta" id="preview-ring">
+                <div class="avatar-preview-inner" id="preview-avatar-box">
+                    <span id="preview-initial">M</span>
+                </div>
+            </div>
+            <h2 class="i18n" data-ar="تخصيص الحساب" data-en="Customize Account">Customize Account</h2>
+            <p class="i18n" data-ar="اختر اسم المستخدم واسم العرض الاختياري" data-en="Choose your username and optional display name">Choose your username and optional display name</p>
+            <div class="ios-input-group">
+                <input type="text" id="name-input" class="ios-input" placeholder="Username (English)..." data-ph-ar="اسم المستخدم (بالإنجليزية)..." data-ph-en="Username (English)..." autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="30" dir="auto">
+                <input type="text" id="display-name-input" class="ios-input" placeholder="Display Name (Optional)..." data-ph-ar="اسم العرض (اختياري)..." data-ph-en="Display Name (Optional)..." autocomplete="off" maxlength="40" dir="auto">
+                <label class="ios-file-btn">
+                    <span class="i18n" data-ar="📷 اختيار صورة شخصية" data-en="📷 Choose Avatar">📷 Choose Avatar</span>
+                    <input type="file" id="avatar-file-input" accept="image/*" style="display:none;">
+                </label>
+            </div>
+            <p id="auth-error-2" class="auth-error" role="alert"></p>
+            <button id="login-btn" class="ios-main-btn i18n" data-ar="دخول إلى المنصة" data-en="Enter Platform">Enter Platform</button>
+            <button type="button" id="back-to-login-btn" class="auth-link-btn i18n" data-ar="← رجوع" data-en="← Back">← Back</button>
         </div>
-        <div id="search-results" class="mt-md"></div>
-      </div>
+    </div>
 
-      <div id="user-inspect-card" class="ios-profile-card mt-md" hidden>
-        <div class="insta-profile-header">
-          <div class="ios-avatar-ring"><div class="ios-avatar-inner" id="inspect-avatar-box"></div></div>
-          <div class="insta-profile-stats">
-            <div class="stat-box"><strong id="inspect-posts-count">0</strong><span data-i="posts">منشورات</span></div>
-            <div class="stat-box"><strong id="inspect-followers-count">0</strong><span data-i="followers">المتابعون</span></div>
-            <div class="stat-box"><strong id="inspect-following-count">0</strong><span data-i="following">المتابعة</span></div>
-          </div>
+    <!-- الشاشة الرئيسية -->
+    <div id="main-screen" class="app-main-screen">
+
+        <header class="insta-top-bar">
+            <div class="insta-logo-area">
+                <span class="ms-brand">MS Media</span>
+                <span class="verified-badge" id="my-badge" style="display:none;">✔️</span>
+            </div>
+            <div class="insta-top-actions">
+                <button class="insta-top-icon" title="Notifications">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                </button>
+                <button class="insta-top-icon" title="Messages" data-goto="chat-tab">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="ios-main-body">
+
+            <!-- 1. الرئيسية (Home) -->
+            <section id="feed-tab" class="ios-tab-pane active">
+                <div class="stories-bar" id="stories-bar-list"></div>
+
+                <div class="suggestions-section" id="suggestions-box">
+                    <div class="suggestions-header i18n" data-ar="اقتراحات قد تعجبك" data-en="Suggested for you">Suggested for you</div>
+                    <div class="suggestions-scroll" id="suggestions-list"></div>
+                </div>
+
+                <div id="posts-feed" class="ios-feed-list"></div>
+            </section>
+
+            <!-- 2. البحث (Search) -->
+            <section id="search-tab" class="ios-tab-pane">
+                <div class="ios-profile-card">
+                    <div class="ios-input-group">
+                        <input type="search" id="search-input" class="ios-input" placeholder="Search users..." data-ph-ar="ابحث عن مستخدمين..." data-ph-en="Search users..." autocomplete="off" autocapitalize="off" spellcheck="false" dir="auto">
+                    </div>
+                    <div id="search-results" class="search-results-list" style="margin-top:15px; text-align:start;"></div>
+                </div>
+            </section>
+
+            <!-- 3. الريلز (Reels) -->
+            <section id="reels-tab" class="ios-tab-pane">
+                <div class="ios-profile-card" style="text-align: center; padding: 60px 20px;">
+                    <div style="font-size: 40px; margin-bottom: 15px;">⚡</div>
+                    <h3 style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">Reels Video</h3>
+                    <p class="ios-sub-text i18n" data-ar="استعرض أحدث مقاطع الفيديو والريلز البلورية." data-en="Explore short videos and liquid glass reels.">Explore short videos and liquid glass reels.</p>
+                </div>
+            </section>
+
+            <!-- 4. الرسائل (DMs) -->
+            <section id="chat-tab" class="ios-tab-pane">
+                <div class="ios-chat-container-pro">
+                    <div class="dm-header-bar" id="dm-header-bar">
+                        <span id="dm-current-username" style="font-weight: bold; font-size: 18px;"></span>
+                        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    </div>
+                    <div class="dm-search-bar-wrap">
+                        <input type="text" id="dm-filter-input" class="ios-input" placeholder="Search messages..." data-ph-ar="ابحث في الرسائل..." data-ph-en="Search messages..." autocomplete="off" dir="auto" style="padding: 10px 16px; font-size: 13px;">
+                    </div>
+
+                    <div class="chat-sidebar" id="chat-sidebar">
+                        <div class="dm-section-title i18n" data-ar="الرسائل المباشرة" data-en="Direct Messages" style="font-size: 13px; color: var(--text-sub); margin-bottom: 10px; font-weight: 600;">Direct Messages</div>
+                        <div id="users-chat-list" class="users-chat-list"></div>
+                    </div>
+
+                    <div class="chat-main-area" id="chat-main-area" style="display:none;">
+                        <div class="chat-header-user">
+                            <button id="back-to-users" class="back-btn">←</button>
+                            <span id="active-chat-username">@user</span>
+                        </div>
+                        <div class="ios-chat-messages" id="chat-messages"></div>
+
+                        <div class="ios-chat-input-area">
+                            <label class="ios-chat-media-btn" title="Send Media">
+                                <span>📷</span>
+                                <input type="file" id="chat-media-input" accept="image/*,video/*" style="display:none;">
+                            </label>
+                            <input type="text" id="chat-input" class="ios-chat-input" placeholder="Message..." data-ph-ar="رسالة..." data-ph-en="Message..." autocomplete="off" dir="auto">
+                            <button id="send-chat-btn" class="ios-send-btn i18n" data-ar="إرسال" data-en="Send">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. الملف الشخصي (Profile) -->
+            <section id="profile-tab" class="ios-tab-pane">
+                <div class="insta-profile-header">
+                    <div class="ios-avatar-ring" id="main-avatar-ring">
+                        <div class="ios-avatar-inner" id="user-avatar-box">
+                            <span id="user-avatar-initial">M</span>
+                        </div>
+                    </div>
+                    <div class="insta-profile-stats">
+                        <div class="stat-box"><strong id="stat-posts-count">0</strong><span class="i18n" data-ar="منشورات" data-en="Posts">Posts</span></div>
+                        <div class="stat-box clickable-stat" data-followers="followers"><strong id="stat-followers-count">0</strong><span class="i18n" data-ar="المتابعون" data-en="Followers">Followers</span></div>
+                        <div class="stat-box clickable-stat" data-followers="following"><strong id="stat-following-count">0</strong><span class="i18n" data-ar="المتابعة" data-en="Following">Following</span></div>
+                    </div>
+                </div>
+
+                <div class="insta-bio-section">
+                    <h2 id="profile-display-name">@username</h2>
+                    <p id="profile-email-text" class="ios-sub-text">user@gmail.com</p>
+                    <span id="profile-verified-status" class="verification-tag" style="display:none;">Verified ✔️</span>
+                </div>
+
+                <div class="insta-action-buttons">
+                    <button id="edit-profile-btn" class="insta-btn-alt i18n" data-ar="تعديل الملف الشخصي" data-en="Edit Profile">Edit Profile</button>
+                    <button class="insta-btn-alt ios-settings-open-btn i18n" id="open-settings-modal-btn" data-ar="⚙️ الإعدادات" data-en="⚙️ Settings">⚙️ Settings</button>
+                </div>
+
+                <div class="ios-post-creator" style="margin-top: 15px;">
+                    <div style="font-weight: 600; font-size: 14px; margin-bottom: 10px;" class="i18n" data-ar="إنشاء منشور جديد" data-en="Create New Post">Create New Post</div>
+                    <textarea id="post-text" class="ios-textarea" placeholder="What's on your mind?" data-ph-ar="بماذا تفكر؟" data-ph-en="What's on your mind?" dir="auto"></textarea>
+                    <div class="ios-post-actions">
+                        <label class="ios-file-upload-sm">
+                            <span class="i18n" data-ar="📷 وسائط" data-en="📷 Media">📷 Media</span>
+                            <input type="file" id="post-media" accept="image/*,video/*" style="display:none;">
+                        </label>
+                        <button id="publish-post-btn" class="ios-main-btn-sm i18n" data-ar="نشر" data-en="Post">Post</button>
+                    </div>
+                </div>
+
+                <div class="ios-section-title i18n" data-ar="منشوراتي" data-en="My Posts" style="margin-top:20px;">My Posts</div>
+                <div id="my-posts-list" class="ios-feed-list"></div>
+
+                <div id="admin-panel-section" class="ios-settings-card" style="display:none; margin-top:20px;">
+                    <h3 class="i18n" data-ar="🛡️ لوحة الإدارة" data-en="🛡️ Admin Panel">🛡️ Admin Panel</h3>
+                    <input type="text" id="verify-username-input" class="ios-input" placeholder="Username to verify..." data-ph-ar="اسم المستخدم للتوثيق..." data-ph-en="Username to verify..." autocomplete="off" autocapitalize="off" dir="auto" style="margin-top:10px;">
+                    <button id="grant-verify-btn" class="ios-main-btn i18n" data-ar="منح التوثيق ✔️" data-en="Grant Verification ✔️" style="margin-top:10px;">Grant Verification ✔️</button>
+                </div>
+            </section>
+        </main>
+
+        <!-- شريط التنقل السفلي العائم مع الفقاعة المائية المتحركة -->
+        <nav class="ios-bottom-nav" id="bottom-nav-bar">
+            <div class="liquid-bubble" id="liquid-bubble"></div>
+            <button class="ios-nav-item active" data-tab="feed-tab" title="Home">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </button>
+            <button class="ios-nav-item" data-tab="search-tab" title="Search">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+            <button class="ios-nav-item" data-tab="reels-tab" title="Reels">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+            </button>
+            <button class="ios-nav-item" data-tab="chat-tab" title="Messages">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </button>
+            <button class="ios-nav-item" data-tab="profile-tab" title="Profile">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </button>
+        </nav>
+    </div>
+
+    <!-- نافذة الإعدادات -->
+    <div id="ios-settings-modal" class="story-modal-overlay" style="display:none;">
+        <div class="story-modal-card" style="width: 380px; text-align: start;">
+            <button class="close-story-btn" id="close-settings-modal-btn" data-close-modal="ios-settings-modal">✕</button>
+            <h3 class="i18n" data-ar="⚙️ الإعدادات" data-en="⚙️ Settings" style="text-align: center; margin-bottom: 15px;">⚙️ Settings</h3>
+
+            <div class="setting-item">
+                <span class="i18n" data-ar="المظهر (داكن / فاتح)" data-en="Theme (Dark / Light)">Theme (Dark / Light)</span>
+                <button id="theme-toggle-btn" class="ios-setting-btn">☀️ / 🌙</button>
+            </div>
+
+            <div class="setting-item">
+                <span>Language (العربية / English)</span>
+                <button id="lang-toggle-btn" class="ios-setting-btn">🇸🇦 العربية</button>
+            </div>
+
+            <div class="setting-item" style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                <button id="logout-btn" class="ios-main-btn i18n" data-ar="تسجيل الخروج" data-en="Log Out" style="background: #ff3b30;">Log Out</button>
+            </div>
         </div>
-        <div class="insta-bio-section mt-sm">
-          <h2 id="inspect-display-name"></h2>
-          <p id="inspect-username-text" class="ios-sub-text"></p>
-          <p id="inspect-bio-text" class="ios-sub-text" style="white-space: pre-line;"></p>
+    </div>
+
+    <!-- نافذة الستوري -->
+    <div id="story-studio-modal" class="story-modal-overlay" style="display:none;">
+        <div class="story-modal-card" style="width: 380px;">
+            <button class="close-story-btn" data-close-modal="story-studio-modal">✕</button>
+            <h3 class="i18n" data-ar="إنشاء قصة" data-en="Create Story">Create Story</h3>
+            <div id="story-preview-canvas" class="story-canvas bg-grad-1">
+                <span id="story-preview-text">Story text...</span>
+            </div>
+            <input type="text" id="story-text-input" class="ios-input" placeholder="Type text..." data-ph-ar="اكتب نصاً..." data-ph-en="Type text..." autocomplete="off" dir="auto" style="margin-top:12px;">
+            <label class="ios-file-btn" style="margin-top:12px;">
+                <span class="i18n" data-ar="📷 اختيار صورة" data-en="📷 Choose Image">📷 Choose Image</span>
+                <input type="file" id="story-file-input" accept="image/*" style="display:none;">
+            </label>
+            <button id="publish-story-btn" class="ios-main-btn i18n" data-ar="نشر القصة" data-en="Publish Story" style="margin-top:15px;">Publish Story</button>
         </div>
-        <div class="insta-action-buttons mt-md" style="display: flex; gap: 10px;">
-          <button id="inspect-follow-btn" class="ios-main-btn" style="flex: 1;"></button>
-          <button id="inspect-chat-btn" class="insta-btn-alt" style="flex: 1;" data-i="message">مراسلة</button>
+    </div>
+
+    <!-- نافذة المتابعين -->
+    <div id="followers-modal" class="story-modal-overlay" style="display:none;">
+        <div class="story-modal-card" style="width: 360px;">
+            <button class="close-story-btn" data-close-modal="followers-modal">✕</button>
+            <h3 id="followers-modal-title">Followers</h3>
+            <div id="followers-modal-list" style="margin-top:15px; max-height:300px; overflow-y:auto;"></div>
         </div>
-        <div class="ios-section-title mt-lg" data-i="posts">منشورات الحساب</div>
-        <div id="inspect-posts-list" class="ios-feed-list"></div>
-      </div>
-    </section>
+    </div>
 
-    <!-- الريلز -->
-    <section id="reels-tab" class="ios-tab-pane">
-      <div class="ios-profile-card reels-card">
-        <div style="font-size:40px;margin-bottom:15px">⚡</div>
-        <h3 style="font-size:20px;margin-bottom:10px">Reels</h3>
-        <p class="ios-sub-text" data-i="reelsSub">استعرض أحدث مقاطع الفيديو والريلز.</p>
-      </div>
-    </section>
+    <script>
+    (function () {
+        'use strict';
 
-    <!-- الرسائل -->
-    <section id="chat-tab" class="ios-tab-pane">
-      <div class="dm-header-bar" id="dm-header-bar">
-        <strong id="dm-current-username"></strong>
-      </div>
-      <div class="dm-search-bar-wrap" id="dm-search-wrap"><input type="text" id="dm-filter-input" class="ios-input" placeholder="ابحث في الرسائل..."></div>
-      <div id="chat-sidebar">
-        <div class="dm-section-title" data-i="dms">الرسائل المباشرة</div>
-        <div id="users-chat-list"></div>
-      </div>
-      <div class="chat-main-area" id="chat-main-area" hidden>
-        <div class="chat-header-user"><button id="back-to-users" class="back-btn" aria-label="Back">←</button><span id="active-chat-username"></span></div>
-        <div class="ios-chat-messages" id="chat-messages"></div>
-        <div class="ios-chat-input-area">
-          <input type="text" id="chat-input" class="ios-chat-input" placeholder="اكتب رسالة..." autocomplete="off">
-          <button id="send-chat-btn" class="ios-send-btn" data-i="send">إرسال</button>
-        </div>
-      </div>
-    </section>
+        /* ===================== Constants ===================== */
+        const ADMIN_EMAIL = 'mahmood@gmail.com';
+        const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+        const USERNAME_RE = /^[a-z0-9_]{3,30}$/;
+        const MIN_PASSWORD = 6;
+        const MAX_VIDEO_BYTES = 1024 * 1024; // videos are stored in localStorage, so keep them small
 
-    <!-- الملف الشخصي -->
-    <section id="profile-tab" class="ios-tab-pane">
-      <div class="insta-profile-header">
-        <div class="ios-avatar-ring"><div class="ios-avatar-inner" id="user-avatar-box"></div></div>
-        <div class="insta-profile-stats">
-          <div class="stat-box"><strong id="stat-posts-count">0</strong><span data-i="posts">منشورات</span></div>
-          <div class="stat-box clickable-stat" data-followers="followers"><strong id="stat-followers-count">0</strong><span data-i="followers">المتابعون</span></div>
-          <div class="stat-box clickable-stat" data-followers="following"><strong id="stat-following-count">0</strong><span data-i="following">المتابعة</span></div>
-        </div>
-      </div>
-      <div class="insta-bio-section">
-        <h2 id="profile-display-name"></h2>
-        <p id="profile-email-text" class="ios-sub-text"></p>
-        <span id="profile-verified-status" class="verification-tag" data-i="verified" hidden>موثّق ✔️</span>
-      </div>
-      <div class="insta-action-buttons">
-        <button class="insta-btn-alt" data-act="editProfile" data-i="editProfile">تعديل الملف الشخصي</button>
-        <button class="insta-btn-alt" data-act="feedback" data-i="feedback">💬 ملاحظات</button>
-        <button class="insta-btn-alt" data-open="ios-settings-modal" data-i="settings">⚙️ الإعدادات</button>
-      </div>
+        /* ===================== Small helpers ===================== */
+        const $ = (id) => document.getElementById(id);
+        const asArray = (v) => (Array.isArray(v) ? v : []);
 
-      <div class="ios-post-creator">
-        <div style="font-weight:600;font-size:14px;margin-bottom:10px" data-i="newPost">إنشاء منشور جديد</div>
-        <textarea id="post-text" class="ios-textarea" placeholder="بماذا تفكر؟" maxlength="1000"></textarea>
-        <div class="ios-post-actions">
-          <label class="ios-file-upload-sm"><span data-i="media">📷 وسائط</span><input type="file" id="post-media" accept="image/*,video/*" hidden></label>
-          <button id="publish-post-btn" class="ios-main-btn-sm" data-i="post">نشر</button>
-        </div>
-      </div>
+        function getRaw(key, fallback) {
+            try { return localStorage.getItem(key) || fallback; } catch (e) { return fallback; }
+        }
+        function setRaw(key, value) {
+            try { localStorage.setItem(key, value); } catch (e) { /* ignore */ }
+        }
+        function load(key, fallback) {
+            try {
+                const raw = localStorage.getItem(key);
+                if (raw === null) return fallback;
+                const val = JSON.parse(raw);
+                return val === null || val === undefined ? fallback : val;
+            } catch (e) {
+                return fallback; // corrupted JSON must not crash the app
+            }
+        }
+        function save(key, value) {
+            try {
+                localStorage.setItem(key, JSON.stringify(value));
+                return true;
+            } catch (e) {
+                notify(t('تعذر الحفظ: مساحة التخزين ممتلئة.', 'Could not save: storage is full.'));
+                return false;
+            }
+        }
+        function notify(msg) { alert(msg); }
+        function esc(s) {
+            return String(s === null || s === undefined ? '' : s).replace(/[&<>"']/g, (c) => (
+                { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+            ));
+        }
+        function makeId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
 
-      <div class="ios-section-title" data-i="myPosts">منشوراتي</div>
-      <div id="my-posts-list" class="ios-feed-list"></div>
-      <div class="ios-section-title" data-i="saved">المحفوظات</div>
-      <div id="saved-list" class="ios-feed-list"></div>
+        /* ===================== State ===================== */
+        let currentLang = getRaw('ms_lang', 'en') === 'ar' ? 'ar' : 'en';
+        let currentTheme = getRaw('ms_theme', 'dark') === 'light' ? 'light' : 'dark';
+        let registeredUsers = asArray(load('ms_all_users', []));
+        let posts = asArray(load('ms_posts', []));
+        let stories = asArray(load('ms_stories', []));
+        let privateMessages = asArray(load('ms_private_chat', []));
+        let verifiedUsers = asArray(load('ms_verified', []));
+        let currentUser = null;      // always a reference to the object inside registeredUsers
+        let activeChatUser = null;
+        let pendingSignup = null;    // { email, salt, passHash } between the two auth screens
+        let selectedAvatar = '';
+        let storyMedia = '';
+        let followersModalType = null;
 
-      <div id="admin-panel-section" class="ios-settings-card mt-lg" hidden>
-        <h3>🛡️ <span data-i="adminPanel">لوحة الإدارة</span></h3>
-        <input type="text" id="verify-username-input" class="ios-input mt-md" placeholder="اسم المستخدم للتوثيق...">
-        <button id="grant-verify-btn" class="ios-main-btn mt-md" data-i="grant">منح التوثيق ✔️</button>
-        <div id="fb-list" class="mt-md"></div>
-      </div>
-    </section>
-  </main>
+        function t(ar, en) { return currentLang === 'ar' ? ar : en; }
 
-  <nav class="ios-bottom-nav" id="bottom-nav-bar">
-    <div class="liquid-bubble" id="liquid-bubble"></div>
-    <button class="ios-nav-item active" data-tab="feed-tab" aria-label="Home"><svg class="ico" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></button>
-    <button class="ios-nav-item" data-tab="search-tab" aria-label="Search"><svg class="ico" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
-    <button class="ios-nav-item" data-tab="reels-tab" aria-label="Reels"><svg class="ico" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
-    <button class="ios-nav-item" data-tab="chat-tab" aria-label="Messages"><svg class="ico" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
-    <button class="ios-nav-item" data-tab="profile-tab" aria-label="Profile"><svg class="ico" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></button>
-  </nav>
-</div>
+        /* ===================== Element references ===================== */
+        const htmlRoot = $('html-root');
+        const authScreen1 = $('auth-screen-1');
+        const authScreen2 = $('auth-screen-2');
+        const mainScreen = $('main-screen');
+        const emailInput = $('email-input');
+        const passwordInput = $('password-input');
+        const nameInput = $('name-input');
+        const displayNameInput = $('display-name-input');
+        const nextAuthBtn = $('next-auth-btn');
+        const loginBtn = $('login-btn');
+        const previewAvatarBox = $('preview-avatar-box');
+        const searchInput = $('search-input');
+        const searchResults = $('search-results');
+        const chatInput = $('chat-input');
+        const chatMessages = $('chat-messages');
+        const langToggleBtn = $('lang-toggle-btn');
 
-<!-- 4. النوافذ المنبثقة (Modals) -->
-<div id="ios-settings-modal" class="story-modal-overlay" hidden>
-  <div class="story-modal-card">
-    <button class="close-story-btn" data-close aria-label="Close">✕</button>
-    <h3 data-i="settings">⚙️ الإعدادات</h3>
-    <div class="setting-item"><span data-i="theme">المظهر (داكن / فاتح)</span><button id="theme-toggle-btn" class="ios-setting-btn">☀️ / 🌙</button></div>
-    <div class="setting-item"><span data-i="language">اللغة</span><button id="lang-toggle-btn" class="ios-setting-btn">🇸🇦 العربية</button></div>
-    <div class="setting-item"><button id="logout-btn" class="ios-main-btn danger" data-i="logout">تسجيل الخروج</button></div>
-  </div>
-</div>
+        /* ===================== Seed / migrate data ===================== */
+        if (posts.length === 0) {
+            posts = [
+                { id: makeId(), author: 'fcbarcelona', displayName: 'FC Barcelona', location: 'Spotify Camp Nou', verified: true, text: 'La convocatòria per al Clàssic #fcbarcelona', media: '', mediaType: '', likes: 44200, likedBy: [] },
+                { id: makeId(), author: 'mll_i1m', displayName: 'Mahmood', location: 'Damascus', verified: true, text: 'MS Media Glass Clone 🔥', media: '', mediaType: '', likes: 1240, likedBy: [] }
+            ];
+            save('ms_posts', posts);
+        }
+        (function normalizePosts() {
+            let changed = false;
+            posts.forEach((p) => {
+                if (!p.id) { p.id = makeId(); changed = true; }
+                if (!Array.isArray(p.likedBy)) { p.likedBy = []; changed = true; }
+                // blob: URLs die on reload, so old posts that used them would show broken media
+                if (p.media && String(p.media).indexOf('blob:') === 0) { p.media = ''; p.mediaType = ''; changed = true; }
+            });
+            if (changed) save('ms_posts', posts);
+        })();
 
-<div id="story-studio-modal" class="story-modal-overlay" hidden>
-  <div class="story-modal-card">
-    <button class="close-story-btn" data-close aria-label="Close">✕</button>
-    <h3 data-i="createStory">إنشاء قصة</h3>
-    <div class="story-canvas bg-grad-1"><span id="story-preview-text" data-i="storyText">نص القصة...</span></div>
-    <input type="text" id="story-text-input" class="ios-input mt-md" placeholder="اكتب نصاً..." maxlength="120">
-    <button id="publish-story-btn" class="ios-main-btn mt-md" data-i="publishStory">نشر القصة</button>
-  </div>
-</div>
+        if (stories.length === 0) {
+            stories = [
+                { author: 'a_ramziii', icon: '🔥', text: 'Story 1' },
+                { author: 'efhubx', icon: '27', text: 'Story 2' },
+                { author: 'tm15_k22', icon: '⚽', text: 'Story 3' }
+            ];
+            save('ms_stories', stories);
+        }
 
-<div id="followers-modal" class="story-modal-overlay" hidden>
-  <div class="story-modal-card">
-    <button class="close-story-btn" data-close aria-label="Close">✕</button>
-    <h3 id="followers-modal-title"></h3>
-    <div id="followers-modal-list"></div>
-  </div>
-</div>
+        /* ===================== Users helpers ===================== */
+        function persistUsers() { return save('ms_all_users', registeredUsers); }
+        function findUserByName(name) { return registeredUsers.find((u) => u.name === name) || null; }
+        function findUserByEmail(email) {
+            return registeredUsers.find((u) => String(u.email || '').toLowerCase() === email) || null;
+        }
+        function reloadUsers() {
+            registeredUsers = asArray(load('ms_all_users', []));
+            if (currentUser) {
+                const fresh = findUserByName(currentUser.name);
+                if (fresh) currentUser = fresh;
+            }
+        }
+        function isAdmin(u) { return !!u && String(u.email || '').toLowerCase() === ADMIN_EMAIL; }
+        function isVerified(u) { return !!u && (isAdmin(u) || verifiedUsers.includes(u.name)); }
+        function avatarHTML(u) {
+            if (u && u.avatar) {
+                return '<img src="' + esc(u.avatar) + '" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
+            }
+            return esc(((u && u.name) || '?').charAt(0).toUpperCase());
+        }
 
-<div id="dyn-modal" class="story-modal-overlay" hidden>
-  <div class="story-modal-card">
-    <button class="close-story-btn" data-close aria-label="Close">✕</button>
-    <h3 id="dyn-title"></h3>
-    <div id="dyn-body"></div>
-  </div>
-</div>
+        /* ===================== Password hashing ===================== */
+        // NOTE: everything here is client-side only (localStorage). A real app must authenticate on a server.
+        function makeSalt() {
+            try {
+                const a = new Uint8Array(8);
+                window.crypto.getRandomValues(a);
+                return Array.from(a, (b) => b.toString(16).padStart(2, '0')).join('');
+            } catch (e) {
+                return String(Math.random()).slice(2) + Date.now();
+            }
+        }
+        async function hashPassword(password, salt) {
+            const data = salt + ':' + password;
+            try {
+                if (window.crypto && window.crypto.subtle) {
+                    const buf = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));
+                    return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, '0')).join('');
+                }
+            } catch (e) { /* fall through */ }
+            let h = 5381;
+            for (let i = 0; i < data.length; i++) h = ((h << 5) + h + data.charCodeAt(i)) | 0;
+            return 'x' + (h >>> 0).toString(16);
+        }
 
-<!-- JavaScript المصحح والمربوط بالكامل -->
-<script>
-const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const load = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
-const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { alert(t('full')); } };
-const hash = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, '0')).join('');
-const readFile = f => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(f); });
+        /* ===================== Language & theme ===================== */
+        function applyLanguage(lang) {
+            htmlRoot.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+            htmlRoot.setAttribute('lang', lang);
+            langToggleBtn.textContent = lang === 'ar' ? '🇺🇸 English' : '🇸🇦 العربية';
+            document.querySelectorAll('.i18n').forEach((el) => {
+                const text = el.getAttribute('data-' + lang);
+                if (text) el.textContent = text;
+            });
+            document.querySelectorAll('[data-ph-ar]').forEach((el) => {
+                const ph = el.getAttribute('data-ph-' + lang);
+                if (ph) el.placeholder = ph;
+            });
+        }
+        function rerenderDynamic() {
+            if (!currentUser) return;
+            renderStoriesBar();
+            renderSuggestions();
+            renderPosts();
+            renderUsersChatList();
+            renderSearchResults();
+            renderPrivateMessages();
+            if (followersModalType && $('followers-modal').style.display !== 'none') openFollowersModal(followersModalType);
+            setTimeout(positionBubble, 50);
+        }
+        function setTheme(theme) {
+            document.body.classList.remove('dark-theme', 'light-theme');
+            document.body.classList.add(theme === 'light' ? 'light-theme' : 'dark-theme');
+        }
 
-const T = {
-  feedback:['💬 ملاحظات','💬 Feedback'], fbHint:['رأيك بيساعدنا نطوّر التطبيق. قيّمنا واكتب ملاحظاتك.','Your opinion helps us improve. Rate us and share your notes.'],
-  fbText:['اكتب ملاحظاتك أو اقتراحاتك...','Write your notes or suggestions...'], fbNeed:['اختر تقييماً أو اكتب ملاحظة.','Pick a rating or write a note.'],
-  fbThanks:['شكراً! وصلتنا ملاحظتك 💙','Thanks! We got your feedback 💙'], fbList:['ملاحظات المستخدمين','User feedback'],
-  comments:['التعليقات','Comments'], addComment:['اكتب تعليقاً...','Add a comment...'], noComments:['لا تعليقات بعد، كن أول من يعلّق.','No comments yet. Be the first.'],
-  notifs:['الإشعارات','Notifications'], n_like:['أعجب بمنشورك','liked your post'], n_follow:['بدأ بمتابعتك','started following you'],
-  n_comment:['علّق على منشورك','commented on your post'], n_message:['أرسل لك رسالة','sent you a message'],
-  saved:['المحفوظات','Saved'], bio:['نبذة عنك...','Your bio...'], save:['حفظ','Save'],
-  copied:['تم نسخ المنشور.','Post copied.'], delConfirm:['حذف المنشور؟','Delete this post?'],
-  welcome:['مرحباً بك في MS Media','Welcome to MS Media'], signin:['سجّل دخولك بالبريد وكلمة المرور','Sign in with your email and password'],
-  forgot:['نسيت كلمة المرور؟','Forgot password?'], next:['التالي','Next'],
-  custom:['تخصيص الحساب','Customize Account'], customSub:['اختر اسم المستخدم واسم العرض الاختياري','Choose your username and optional display name'],
-  avatar:['📷 اختيار صورة شخصية','📷 Choose Avatar'], enter:['دخول إلى المنصة','Enter Platform'],
-  yourStory:['قصتك','Your Story'], suggested:['اقتراحات قد تعجبك','Suggested for you'], suggestedTag:['مقترح','Suggested'],
-  reelsSub:['استعرض أحدث مقاطع الفيديو والريلز.','Explore short videos and reels.'], dms:['الرسائل المباشرة','Direct Messages'],
-  send:['إرسال','Send'], posts:['منشورات','Posts'], followers:['المتابعون','Followers'], following:['المتابعة','Following'],
-  editProfile:['تعديل الملف الشخصي','Edit Profile'], settings:['⚙️ الإعدادات','⚙️ Settings'], newPost:['إنشاء منشور جديد','Create New Post'],
-  media:['📷 وسائط','📷 Media'], post:['نشر','Post'], myPosts:['منشوراتي','My Posts'], verified:['موثّق ✔️','Verified ✔️'],
-  adminPanel:['لوحة الإدارة','Admin Panel'], grant:['منح التوثيق ✔️','Grant Verification ✔️'],
-  theme:['المظهر (داكن / فاتح)','Theme (Dark / Light)'], language:['اللغة','Language'], langBtn:['🇺🇸 English','🇸🇦 العربية'], logout:['تسجيل الخروج','Log Out'],
-  createStory:['إنشاء قصة','Create Story'], storyText:['نص القصة...','Story text...'], publishStory:['نشر القصة','Publish Story'],
-  message:['مراسلة','Message'], follow:['متابعة','Follow'], followingBtn:['تتابعه','Following'], likes:['إعجاب','likes'], empty:['القائمة فارغة','List is empty'],
-  badAuth:['أدخل بريداً صحيحاً وكلمة مرور من 6 أحرف على الأقل.','Enter a valid email and a password of at least 6 characters.'],
-  wrongPw:['كلمة المرور غير صحيحة.','Wrong password.'], badName:['اسم المستخدم: 3-20 حرفاً إنجليزياً أو أرقاماً أو _','Username: 3-20 English letters, numbers or _'],
-  taken:['اسم المستخدم مأخوذ.','Username is already taken.'], big:['الملف كبير (الحد 1.5MB).','File is too large (max 1.5MB).'], full:['مساحة التخزين ممتلئة.','Storage is full.']
-};
+        /* ===================== Auth ===================== */
+        function setAuthError(id, msg) { $(id).textContent = msg || ''; }
+        function showAuthScreen(n) {
+            authScreen1.classList.toggle('active', n === 1);
+            authScreen2.classList.toggle('active', n === 2);
+            if (n === 2) setTimeout(() => nameInput.focus(), 50);
+        }
 
-let lang = load('ms_lang', 'ar'), theme = load('ms_theme', 'dark');
-function t(k) { return T[k]?.[lang === 'ar' ? 0 : 1] || k; }
+        async function handleNext() {
+            setAuthError('auth-error-1', '');
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value; // never trim a password
+            if (!email || !password) return setAuthError('auth-error-1', t('أدخل البريد وكلمة المرور.', 'Please enter email and password.'));
+            if (!EMAIL_RE.test(email)) return setAuthError('auth-error-1', t('صيغة البريد الإلكتروني غير صحيحة.', 'Invalid email format.'));
+            if (password.length < MIN_PASSWORD) return setAuthError('auth-error-1', t('كلمة المرور يجب ألا تقل عن 6 أحرف.', 'Password must be at least 6 characters.'));
 
-function applyTheme() { document.body.className = theme + '-theme'; }
-function applyLang() {
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  $$('[data-i]').forEach(e => { const k = e.dataset.i; if(T[k]) e.textContent = t(k); });
-  const btn = $('#lang-toggle-btn'); if(btn) btn.textContent = t('langBtn');
-  if (me) renderAll();
-  moveBubble();
-}
+            nextAuthBtn.disabled = true;
+            try {
+                reloadUsers();
+                const existing = findUserByEmail(email);
+                if (existing) {
+                    // Existing account -> verify password and sign in directly
+                    if (!existing.passHash) {
+                        // Account created before passwords existed: the first password entered becomes its password
+                        existing.salt = makeSalt();
+                        existing.passHash = await hashPassword(password, existing.salt);
+                        if (!persistUsers()) return;
+                    } else if ((await hashPassword(password, existing.salt || '')) !== existing.passHash) {
+                        return setAuthError('auth-error-1', t('كلمة المرور غير صحيحة.', 'Wrong password.'));
+                    }
+                    startSession(existing);
+                } else {
+                    // New account -> continue to the customize screen
+                    const salt = makeSalt();
+                    pendingSignup = { email, salt, passHash: await hashPassword(password, salt) };
+                    setAuthError('auth-error-2', '');
+                    showAuthScreen(2);
+                }
+            } finally {
+                nextAuthBtn.disabled = false;
+            }
+        }
 
-const ADMIN_EMAIL = 'mahmood@gmail.com', MAX = 1.5e6;
-let users = load('ms_all_users', []), posts = load('ms_posts', []), stories = load('ms_stories', []);
-let msgs = load('ms_private_chat', []), verified = load('ms_verified', ['mahmood']);
-users.forEach(u => { u.followersList ??= []; u.followingList ??= []; });
-let me = users.find(u => u.name === load('ms_session', null)) || null;
-let chatWith = null, avatarData = '', temp = null;
+        async function handleSignup() {
+            setAuthError('auth-error-2', '');
+            if (!pendingSignup) { showAuthScreen(1); return; }
+            const name = nameInput.value.trim().toLowerCase();
+            const displayName = displayNameInput.value.trim() || name;
+            if (!USERNAME_RE.test(name)) {
+                return setAuthError('auth-error-2', t('اسم المستخدم: إنجليزي (أحرف/أرقام/_) من 3 إلى 30 حرفاً.', 'Username: English letters, numbers or _ (3-30 characters).'));
+            }
+            reloadUsers();
+            if (findUserByEmail(pendingSignup.email)) {
+                pendingSignup = null;
+                showAuthScreen(1);
+                return setAuthError('auth-error-1', t('هذا البريد مسجل مسبقاً، سجّل الدخول.', 'This email is already registered, please sign in.'));
+            }
+            if (findUserByName(name)) return setAuthError('auth-error-2', t('اسم المستخدم مأخوذ، اختر اسماً آخر.', 'Username is already taken.'));
 
-if (!posts.length) {
-  posts = [
-    { author:'fcbarcelona', displayName:'FC Barcelona', verified:true, text:'La convocatòria per al Clàssic #fcbarcelona', media:'', mediaType:'', likes:44200, likedBy:[] },
-    { author:'mll_i1m', displayName:'Mahmood', verified:true, text:'MS Media Glass Clone 🔥', media:'', mediaType:'', likes:1240, likedBy:[] }
-  ];
-  save('ms_posts', posts);
-}
+            const user = {
+                email: pendingSignup.email,
+                name,
+                displayName,
+                avatar: selectedAvatar,
+                salt: pendingSignup.salt,
+                passHash: pendingSignup.passHash,
+                followersList: [],
+                followingList: []
+            };
+            registeredUsers.push(user);
+            if (!persistUsers()) { registeredUsers.pop(); return; }
+            pendingSignup = null;
+            selectedAvatar = '';
+            startSession(user);
+        }
 
-posts.forEach((p, i) => { p.id ??= 's' + i; p.time ??= Date.now(); p.comments ??= []; });
-save('ms_posts', posts);
-let notifs = load('ms_notifs', []), feedback = load('ms_feedback', []), fbStars = 0;
+        function startSession(user) {
+            currentUser = user;
+            save('ms_current_user', { name: user.name }); // never store the password hash in the session
+            initApp();
+        }
 
-// الأحداث والتفاعل مع واجهة الدخول
-$('#toggle-password-btn').onclick = () => { const i = $('#password-input'); i.type = i.type === 'password' ? 'text' : 'password'; };
-$('#forgot-password-link').onclick = e => { e.preventDefault(); alert(t('noReset')); };
-$('#avatar-file-input').onchange = async e => {
-  const f = e.target.files[0]; if (!f) return;
-  if (f.size > MAX) return alert(t('big'));
-  avatarData = await readFile(f);
-  $('#preview-avatar-box').innerHTML = `<img src="${avatarData}" alt="">`;
-};
+        /* ===================== Tabs / bubble ===================== */
+        function positionBubble() {
+            const btn = document.querySelector('.ios-nav-item.active');
+            if (btn) moveBubbleTo(btn);
+        }
+        function moveBubbleTo(btn) {
+            const bubble = $('liquid-bubble');
+            const navBar = $('bottom-nav-bar');
+            if (!bubble || !navBar) return;
+            const btnRect = btn.getBoundingClientRect();
+            const navRect = navBar.getBoundingClientRect();
+            if (!btnRect.width) return; // nav is hidden right now
+            bubble.style.width = btnRect.width + 'px';
+            bubble.style.transform = 'translateX(' + (btnRect.left - navRect.left) + 'px)';
+        }
+        function activateTab(tabId) {
+            if (currentUser) {
+                reloadUsers();
+                renderSuggestions();
+                renderUsersChatList();
+                updateFollowStats();
+                renderSearchResults();
+            }
+            const btn = document.querySelector('.ios-nav-item[data-tab="' + tabId + '"]');
+            document.querySelectorAll('.ios-nav-item').forEach((b) => b.classList.toggle('active', b === btn));
+            document.querySelectorAll('.ios-tab-pane').forEach((p) => p.classList.toggle('active', p.id === tabId));
+            if (btn) moveBubbleTo(btn);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-// زر التالي (إصلاح تسجيل الدخول والتنقل بين الحسابات)
-$('#next-auth-btn').onclick = async () => {
-  const email = $('#email-input').value.trim().toLowerCase(), pw = $('#password-input').value;
-  if (!/^\S+@\S+\.\S+$/.test(email) || pw.length < 6) return alert(t('badAuth'));
-  
-  const passHash = await hash(pw);
-  const u = users.find(x => x.email === email);
+        /* ===================== App init & profile ===================== */
+        function initApp() {
+            authScreen1.classList.remove('active');
+            authScreen2.classList.remove('active');
+            mainScreen.classList.add('active');
+            passwordInput.value = '';
 
-  if (u) {
-    if (u.passHash && u.passHash !== passHash) return alert(t('wrongPw'));
-    if (!u.passHash) { u.passHash = passHash; save('ms_all_users', users); }
-    return login(u);
-  }
-  temp = { email, passHash };
-  $('#auth-screen-1').classList.remove('active');
-  $('#auth-screen-2').classList.add('active');
-};
+            renderProfileHeader();
+            updateFollowStats();
+            renderPosts();
+            renderStoriesBar();
+            renderSuggestions();
+            renderUsersChatList();
+            setTimeout(positionBubble, 100);
+        }
 
-$('#login-btn').onclick = () => {
-  const name = $('#name-input').value.trim().toLowerCase();
-  if (!/^[a-z0-9_]{3,20}$/.test(name)) return alert(t('badName'));
-  if (users.some(u => u.name === name)) return alert(t('taken'));
-  
-  const u = { ...temp, name, displayName: $('#display-name-input').value.trim() || name, avatar: avatarData, followersList: [], followingList: [] };
-  users.push(u); save('ms_all_users', users); 
-  login(u);
-};
+        function renderProfileHeader() {
+            const u = currentUser;
+            $('profile-display-name').textContent = (u.displayName && u.displayName !== u.name) ? u.displayName + ' (@' + u.name + ')' : '@' + u.name;
+            $('profile-email-text').textContent = u.email;
+            $('dm-current-username').textContent = u.name;
+            $('user-avatar-box').innerHTML = avatarHTML(u);
 
-$('#logout-btn').onclick = () => { localStorage.removeItem('ms_session'); location.reload(); };
+            const verified = isVerified(u);
+            $('my-badge').style.display = verified ? 'inline-block' : 'none';
+            $('profile-verified-status').style.display = verified ? 'inline-block' : 'none';
+            $('admin-panel-section').style.display = isAdmin(u) ? 'block' : 'none';
+        }
 
-function login(u) { me = u; save('ms_session', u.name); initApp(); }
+        function updateFollowStats() {
+            if (!currentUser) return;
+            $('stat-followers-count').textContent = asArray(currentUser.followersList).length;
+            $('stat-following-count').textContent = asArray(currentUser.followingList).length;
+        }
 
-function initApp() {
-  $('#auth-screen-1').classList.remove('active');
-  $('#auth-screen-2').classList.remove('active');
-  $('#main-screen').classList.add('active');
-  const isV = verified.includes(me.name);
-  refreshProfile();
-  $('#dm-current-username').textContent = me.name;
-  $('#user-avatar-box').innerHTML = me.avatar ? `<img src="${esc(me.avatar)}" alt="">` : `<span>${esc(me.name[0].toUpperCase())}</span>`;
-  $('#my-badge').hidden = $('#profile-verified-status').hidden = !isV;
-  $('#admin-panel-section').hidden = me.email !== ADMIN_EMAIL;
-  renderAll();
-  requestAnimationFrame(moveBubble);
-}
+        /* ===================== Media helpers ===================== */
+        function readAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(new Error(t('تعذر قراءة الملف.', 'Could not read the file.')));
+                reader.readAsDataURL(file);
+            });
+        }
+        async function resizeImage(file, maxDim, quality) {
+            const dataUrl = await readAsDataURL(file);
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+                    const w = Math.max(1, Math.round(img.width * scale));
+                    const h = Math.max(1, Math.round(img.height * scale));
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#fff';
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.drawImage(img, 0, 0, w, h);
+                    resolve(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.onerror = () => reject(new Error(t('تعذر قراءة الصورة.', 'Could not read the image.')));
+                img.src = dataUrl;
+            });
+        }
+        async function prepareMedia(file, maxDim) {
+            if (file.type.indexOf('image/') === 0) return { url: await resizeImage(file, maxDim, 0.82), type: 'image' };
+            if (file.type.indexOf('video/') === 0) {
+                if (file.size > MAX_VIDEO_BYTES) throw new Error(t('الفيديو كبير جداً (الحد الأقصى 1MB لأن التخزين محلي).', 'Video is too large (max 1 MB because storage is local).'));
+                return { url: await readAsDataURL(file), type: 'video' };
+            }
+            throw new Error(t('نوع الملف غير مدعوم.', 'Unsupported file type.'));
+        }
 
-function moveBubble() {
-  const b = $('.ios-nav-item.active'), bb = $('#liquid-bubble');
-  if (!b || !b.offsetWidth) return;
-  bb.style.width = b.offsetWidth + 'px';
-  bb.style.transform = `translateX(${b.offsetLeft}px)`;
-}
+        /* ===================== Stories ===================== */
+        function renderStoriesBar() {
+            const bar = $('stories-bar-list');
+            bar.innerHTML = '<div class="story-item" data-add-story="1">' +
+                '<div class="story-ring add-story-ring"><div class="story-dot" id="story-my-avatar">+</div></div>' +
+                '<span>' + esc(t('قصتك', 'Your Story')) + '</span></div>';
+            stories.forEach((s) => {
+                const au = findUserByName(s.author);
+                const img = s.media || (au && au.avatar) || s.avatar || '';
+                const thumb = img
+                    ? '<img src="' + esc(img) + '" alt="" style="width:100%;height:100%;object-fit:cover;">'
+                    : esc(s.icon || String(s.author || '?').charAt(0).toUpperCase());
+                const item = document.createElement('div');
+                item.className = 'story-item';
+                item.innerHTML = '<div class="story-ring"><div class="story-dot">' + thumb + '</div></div><span>@' + esc(s.author) + '</span>';
+                bar.appendChild(item);
+            });
+        }
 
-function go(tab) {
-  $$('.ios-nav-item').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-  $$('.ios-tab-pane').forEach(p => p.classList.toggle('active', p.id === tab));
-  moveBubble();
-  scrollTo({ top: 0, behavior: 'smooth' });
-}
+        function openStoryStudio() { $('story-studio-modal').style.display = 'flex'; }
+        function closeAllModals() {
+            document.querySelectorAll('.story-modal-overlay').forEach((m) => { m.style.display = 'none'; });
+        }
+        function resetStoryForm() {
+            $('story-text-input').value = '';
+            $('story-preview-text').textContent = 'Story text...';
+            $('story-file-input').value = '';
+            $('story-preview-canvas').style.backgroundImage = '';
+            storyMedia = '';
+        }
+        function publishStory() {
+            const txt = $('story-text-input').value.trim();
+            if (!txt && !storyMedia) return notify(t('اكتب نصاً أو اختر صورة للقصة.', 'Add text or an image to your story.'));
+            stories.unshift({ author: currentUser.name, icon: '', text: txt, media: storyMedia, time: Date.now() });
+            if (!save('ms_stories', stories)) { stories.shift(); return; }
+            resetStoryForm();
+            closeAllModals();
+            renderStoriesBar();
+        }
 
-const av = u => u.avatar ? `<img src="${esc(u.avatar)}" alt="">` : esc(u.name[0].toUpperCase());
+        /* ===================== Follow / suggestions ===================== */
+        function followLabel(isFollowing) {
+            return isFollowing ? t('تتابعه', 'Following') : t('متابعة', 'Follow');
+        }
+        function renderSuggestions() {
+            const list = $('suggestions-list');
+            const box = $('suggestions-box');
+            list.innerHTML = '';
+            const others = registeredUsers.filter((u) => u.name !== currentUser.name);
+            if (others.length === 0) { box.style.display = 'none'; return; }
+            box.style.display = 'block';
+            const following = asArray(currentUser.followingList);
+            others.slice(0, 20).forEach((u) => {
+                const card = document.createElement('div');
+                card.className = 'suggestion-card';
+                card.innerHTML =
+                    '<div class="sugg-avatar">' + avatarHTML(u) + '</div>' +
+                    '<strong>@' + esc(u.name) + '</strong>' +
+                    '<p style="font-size:11px; color:var(--text-sub);">' + esc(t('مقترح', 'Suggested')) + '</p>' +
+                    '<button class="ios-main-btn-sm" style="margin-top:8px; width:100%;" data-follow="' + esc(u.name) + '">' +
+                    esc(followLabel(following.includes(u.name))) + '</button>';
+                list.appendChild(card);
+            });
+        }
 
-function renderAll() { renderStats(); renderStories(); renderSuggestions(); renderChatUsers(); renderPosts(); }
-function renderStats() {
-  $('#stat-followers-count').textContent = me.followersList.length;
-  $('#stat-following-count').textContent = me.followingList.length;
-  $('#stat-posts-count').textContent = posts.filter(p => p.author === me.name).length;
-}
+        function toggleFollow(targetName) {
+            if (!currentUser || targetName === currentUser.name) return;
+            const target = findUserByName(targetName);
+            if (!target) return;
+            currentUser.followingList = asArray(currentUser.followingList);
+            target.followersList = asArray(target.followersList);
 
-function renderStories() {
-  $('#stories-bar-list').innerHTML =
-    `<div class="story-item" data-open="story-studio-modal"><div class="story-ring add-story-ring"><div class="story-dot">+</div></div><span>${t('yourStory')}</span></div>` +
-    stories.map(s => `<div class="story-item"><div class="story-ring"><div class="story-dot">${esc(s.icon || s.author[0].toUpperCase())}</div></div><span>@${esc(s.author)}</span></div>`).join('');
-}
+            const idx = currentUser.followingList.indexOf(targetName);
+            if (idx > -1) {
+                currentUser.followingList.splice(idx, 1);
+                const j = target.followersList.indexOf(currentUser.name);
+                if (j > -1) target.followersList.splice(j, 1);
+            } else {
+                currentUser.followingList.push(targetName);
+                if (!target.followersList.includes(currentUser.name)) target.followersList.push(currentUser.name);
+            }
+            persistUsers();
+            updateFollowStats();
+            renderSuggestions();
+            renderSearchResults();
+            if (followersModalType && $('followers-modal').style.display !== 'none') openFollowersModal(followersModalType);
+        }
 
-function renderSuggestions() {
-  const others = users.filter(u => u.name !== me.name);
-  $('#suggestions-box').hidden = !others.length;
-  $('#suggestions-list').innerHTML = others.map(u => `<div class="suggestion-card"><strong>@${esc(u.name)}</strong></div>`).join('');
-}
+        function openFollowersModal(type) {
+            followersModalType = type;
+            const list = $('followers-modal-list');
+            list.innerHTML = '';
+            const names = asArray(type === 'followers' ? currentUser.followersList : currentUser.followingList);
+            $('followers-modal-title').textContent = type === 'followers' ? t('المتابعون', 'Followers') : t('المتابعة', 'Following');
+            if (names.length === 0) {
+                list.innerHTML = '<p class="ios-sub-text" style="padding:15px; text-align:center;">' + esc(t('القائمة فارغة', 'List is empty')) + '</p>';
+            } else {
+                names.forEach((uname) => {
+                    const div = document.createElement('div');
+                    div.className = 'chat-user-row';
+                    div.innerHTML = '<span>@' + esc(uname) + '</span> <button class="ios-main-btn-sm" data-message="' + esc(uname) + '">' + esc(t('مراسلة', 'Message')) + '</button>';
+                    list.appendChild(div);
+                });
+            }
+            $('followers-modal').style.display = 'flex';
+        }
 
-function renderChatUsers() {
-  $('#users-chat-list').innerHTML = users.filter(u => u.name !== me.name).map(u => `<div class="chat-user-row"><strong>@${esc(u.name)}</strong></div>`).join('');
-}
+        /* ===================== Search ===================== */
+        function renderSearchResults() {
+            searchResults.innerHTML = '';
+            const q = searchInput.value.trim().toLowerCase().replace(/^@+/, '');
+            if (!q || !currentUser) return;
 
-const postHTML = (p, i) => `
-  <article class="insta-post-card">
-    <div class="insta-post-header"><strong>@${esc(p.author)}</strong></div>
-    <p class="post-text">${esc(p.text)}</p>
-  </article>
-`;
+            const matches = registeredUsers.filter((u) =>
+                u.name !== currentUser.name &&
+                (u.name.indexOf(q) !== -1 || String(u.displayName || '').toLowerCase().indexOf(q) !== -1)
+            );
 
-function renderPosts() { $('#posts-feed').innerHTML = posts.map(postHTML).join(''); }
-function refreshProfile() { $('#profile-display-name').textContent = `${me.displayName} (@${me.name})`; }
+            if (matches.length === 0) {
+                searchResults.innerHTML = '<div class="search-empty">' + esc(t('لا توجد نتائج', 'No users found')) + '</div>';
+                return;
+            }
 
-applyTheme();
-applyLang();
-if (me) initApp();
-</script>
+            const following = asArray(currentUser.followingList);
+            matches.slice(0, 50).forEach((u) => {
+                const div = document.createElement('div');
+                div.className = 'search-user-item user-result';
+                const showDisplay = u.displayName && u.displayName !== u.name;
+                div.innerHTML =
+                    '<div class="user-result-main">' +
+                        '<div class="mini-avatar">' + avatarHTML(u) + '</div>' +
+                        '<div style="min-width:0;"><strong>@' + esc(u.name) + (isVerified(u) ? ' ✔️' : '') + '</strong>' +
+                        (showDisplay ? '<div style="font-size:12px; color:var(--text-sub);">' + esc(u.displayName) + '</div>' : '') + '</div>' +
+                    '</div>' +
+                    '<div class="user-result-actions">' +
+                        '<button class="ios-main-btn-sm" data-follow="' + esc(u.name) + '">' + esc(followLabel(following.includes(u.name))) + '</button>' +
+                        '<button class="ios-main-btn-sm" data-message="' + esc(u.name) + '">' + esc(t('مراسلة', 'Message')) + '</button>' +
+                    '</div>';
+                searchResults.appendChild(div);
+            });
+        }
+
+        /* ===================== Chat ===================== */
+        function renderUsersChatList() {
+            const list = $('users-chat-list');
+            list.innerHTML = '';
+            const filter = $('dm-filter-input').value.trim().toLowerCase().replace(/^@+/, '');
+            const others = registeredUsers.filter((u) =>
+                u.name !== currentUser.name &&
+                (!filter || u.name.indexOf(filter) !== -1 || String(u.displayName || '').toLowerCase().indexOf(filter) !== -1)
+            );
+            if (others.length === 0) {
+                list.innerHTML = '<div class="search-empty">' + esc(t('لا يوجد مستخدمون بعد', 'No users yet')) + '</div>';
+                return;
+            }
+            others.forEach((u) => {
+                const item = document.createElement('div');
+                item.className = 'chat-user-row';
+                item.innerHTML =
+                    '<div style="display:flex; align-items:center; gap:12px;">' +
+                        '<div class="mini-avatar" style="width:45px; height:45px;">' + avatarHTML(u) + '</div>' +
+                        '<div><strong>@' + esc(u.name) + '</strong>' +
+                        '<p style="font-size:12px; color:var(--text-sub);">' + esc(t('نشط مؤخراً', 'Active recently')) + '</p></div>' +
+                    '</div>' +
+                    '<button class="ios-main-btn-sm" data-message="' + esc(u.name) + '">' + esc(t('مراسلة', 'Message')) + '</button>';
+                list.appendChild(item);
+            });
+        }
+
+        function openChat(username) {
+            if (!currentUser || !findUserByName(username)) return;
+            activeChatUser = username;
+            privateMessages = asArray(load('ms_private_chat', []));
+            activateTab('chat-tab'); // the original forgot to switch to the chat tab
+            $('chat-sidebar').style.display = 'none';
+            $('dm-header-bar').style.display = 'none';
+            document.querySelector('.dm-search-bar-wrap').style.display = 'none';
+            $('chat-main-area').style.display = 'flex';
+            $('active-chat-username').textContent = '@' + username;
+            renderPrivateMessages();
+            setTimeout(() => chatInput.focus(), 50);
+        }
+        function closeChat() {
+            activeChatUser = null;
+            $('chat-main-area').style.display = 'none';
+            $('chat-sidebar').style.display = 'block';
+            $('dm-header-bar').style.display = 'flex';
+            document.querySelector('.dm-search-bar-wrap').style.display = 'block';
+        }
+
+        function renderPrivateMessages() {
+            chatMessages.innerHTML = '';
+            if (!activeChatUser || !currentUser) return;
+            privateMessages.filter((m) =>
+                (m.from === currentUser.name && m.to === activeChatUser) ||
+                (m.from === activeChatUser && m.to === currentUser.name)
+            ).forEach((m) => {
+                const div = document.createElement('div');
+                div.className = 'ios-msg ' + (m.from === currentUser.name ? 'mine' : 'others');
+                let html = '';
+                if (m.media) {
+                    html += m.mediaType === 'video'
+                        ? '<video src="' + esc(m.media) + '" controls playsinline class="chat-media"></video>'
+                        : '<img src="' + esc(m.media) + '" alt="" class="chat-media">';
+                }
+                if (m.text) html += '<div>' + esc(m.text) + '</div>'; // escaped: the original allowed HTML injection here
+                div.innerHTML = html;
+                chatMessages.appendChild(div);
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function pushChatMessage(msg) {
+            privateMessages.push(msg);
+            if (!save('ms_private_chat', privateMessages)) { privateMessages.pop(); return false; }
+            renderPrivateMessages();
+            return true;
+        }
+        function sendTextMessage() {
+            const text = chatInput.value.trim();
+            if (!text || !activeChatUser) return;
+            if (pushChatMessage({ from: currentUser.name, to: activeChatUser, text, time: Date.now() })) chatInput.value = '';
+        }
+
+        /* ===================== Posts ===================== */
+        function postCardHTML(p) {
+            const au = findUserByName(p.author);
+            const display = (au && au.displayName) || p.displayName || '';
+            const verified = p.verified || verifiedUsers.includes(p.author);
+            const liked = !!currentUser && asArray(p.likedBy).includes(currentUser.name);
+            let media = '';
+            if (p.media) {
+                media = p.mediaType === 'video'
+                    ? '<video src="' + esc(p.media) + '" controls playsinline class="ios-media"></video>'
+                    : '<img src="' + esc(p.media) + '" alt="" class="ios-media">';
+            }
+            return '' +
+                '<div class="insta-post-header">' +
+                    '<div class="insta-post-user-info">' +
+                        '<div class="insta-post-avatar">' + avatarHTML(au || { name: p.author }) + '</div>' +
+                        '<div>' +
+                            '<strong style="font-size: 14px;">@' + esc(p.author) + '</strong> ' + (verified ? '✔️' : '') +
+                            (display && display !== p.author ? '<div style="font-size: 11px; color: var(--text-sub);">' + esc(display) + '</div>' : '') +
+                        '</div>' +
+                    '</div>' +
+                    '<span>•••</span>' +
+                '</div>' +
+                (p.text ? '<p style="margin: 8px 12px; font-size: 13px;">' + esc(p.text) + '</p>' : '') +
+                media +
+                '<div class="insta-post-actions-bar">' +
+                    '<div style="display: flex; gap: 15px;">' +
+                        '<button data-like="' + esc(p.id) + '" style="background:none; border:none; color:inherit; cursor:pointer; font-size: 18px;">' + (liked ? '❤️' : '🤍') + '</button>' +
+                        '<button style="background:none; border:none; color:inherit; cursor:pointer; font-size: 18px;">💬</button>' +
+                        '<button style="background:none; border:none; color:inherit; cursor:pointer; font-size: 18px;">✈️</button>' +
+                    '</div>' +
+                    '<span style="font-size: 13px; font-weight: bold;">' + Number(p.likes || 0).toLocaleString() + ' ' + esc(t('إعجاب', 'likes')) + '</span>' +
+                '</div>';
+        }
+
+        function renderPosts() {
+            const feed = $('posts-feed');
+            const myFeed = $('my-posts-list');
+            feed.innerHTML = '';
+            myFeed.innerHTML = '';
+            $('stat-posts-count').textContent = posts.filter((p) => p.author === currentUser.name).length;
+
+            if (posts.length === 0) {
+                feed.innerHTML = '<div class="search-empty">' + esc(t('لا توجد منشورات بعد', 'No posts yet')) + '</div>';
+                return;
+            }
+            posts.forEach((p) => {
+                const card = document.createElement('div');
+                card.className = 'insta-post-card';
+                card.innerHTML = postCardHTML(p);
+                feed.appendChild(card);
+                if (p.author === currentUser.name) {
+                    const mine = document.createElement('div');
+                    mine.className = 'insta-post-card';
+                    mine.innerHTML = postCardHTML(p);
+                    myFeed.appendChild(mine);
+                }
+            });
+        }
+
+        function toggleLike(postId) {
+            const p = posts.find((x) => x.id === postId);
+            if (!p || !currentUser) return;
+            p.likedBy = asArray(p.likedBy);
+            const idx = p.likedBy.indexOf(currentUser.name);
+            if (idx > -1) { p.likedBy.splice(idx, 1); p.likes = Math.max(0, (p.likes || 0) - 1); }
+            else { p.likedBy.push(currentUser.name); p.likes = (p.likes || 0) + 1; }
+            save('ms_posts', posts);
+            renderPosts();
+        }
+
+        /* ===================== Event wiring ===================== */
+        // Auth
+        $('toggle-password-btn').addEventListener('click', () => {
+            passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+        });
+        nextAuthBtn.addEventListener('click', handleNext);
+        loginBtn.addEventListener('click', handleSignup);
+        $('back-to-login-btn').addEventListener('click', () => { pendingSignup = null; setAuthError('auth-error-1', ''); showAuthScreen(1); });
+        emailInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); passwordInput.focus(); } });
+        passwordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); handleNext(); } });
+        nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); handleSignup(); } });
+        displayNameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); handleSignup(); } });
+        nameInput.addEventListener('input', () => {
+            const initial = $('preview-initial');
+            if (initial && !selectedAvatar) initial.textContent = (nameInput.value.trim().charAt(0) || 'M').toUpperCase();
+        });
+        $('forgot-password-link').addEventListener('click', (e) => {
+            e.preventDefault();
+            const em = emailInput.value.trim().toLowerCase();
+            if (!em || !EMAIL_RE.test(em)) return setAuthError('auth-error-1', t('أدخل بريدك الإلكتروني الصحيح أولاً.', 'Enter a valid email first.'));
+            // There is no mail server here, so we must not pretend that a reset link was sent.
+            setAuthError('auth-error-1', t('إعادة التعيين عبر البريد تحتاج خادماً (Backend) وغير متاحة حالياً.', 'Email password reset needs a backend server and is not available yet.'));
+        });
+        $('avatar-file-input').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            if (file.type.indexOf('image/') !== 0) return setAuthError('auth-error-2', t('اختر ملف صورة.', 'Please choose an image file.'));
+            try {
+                selectedAvatar = await resizeImage(file, 256, 0.85);
+                previewAvatarBox.innerHTML = '<img src="' + esc(selectedAvatar) + '" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
+            } catch (err) {
+                setAuthError('auth-error-2', err.message);
+            }
+        });
+
+        // Settings / language / theme / logout
+        $('open-settings-modal-btn').addEventListener('click', () => { $('ios-settings-modal').style.display = 'flex'; });
+        $('theme-toggle-btn').addEventListener('click', () => {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setRaw('ms_theme', currentTheme);
+            setTheme(currentTheme);
+        });
+        langToggleBtn.addEventListener('click', () => {
+            currentLang = currentLang === 'en' ? 'ar' : 'en';
+            setRaw('ms_lang', currentLang);
+            applyLanguage(currentLang);
+            rerenderDynamic();
+        });
+        $('logout-btn').addEventListener('click', () => {
+            try { localStorage.removeItem('ms_current_user'); } catch (e) { /* ignore */ }
+            location.reload();
+        });
+        $('edit-profile-btn').addEventListener('click', () => {
+            const val = prompt(t('اسم العرض الجديد:', 'New display name:'), currentUser.displayName || currentUser.name);
+            if (val === null) return;
+            currentUser.displayName = val.trim().slice(0, 40) || currentUser.name;
+            persistUsers();
+            renderProfileHeader();
+            renderPosts();
+        });
+
+        // Stories
+        $('story-text-input').addEventListener('input', (e) => {
+            $('story-preview-text').textContent = e.target.value || 'Story text...';
+        });
+        $('story-file-input').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            try {
+                storyMedia = await resizeImage(file, 720, 0.8);
+                const canvas = $('story-preview-canvas');
+                canvas.style.backgroundImage = 'url("' + storyMedia + '")';
+                canvas.style.backgroundSize = 'cover';
+                canvas.style.backgroundPosition = 'center';
+            } catch (err) {
+                notify(err.message);
+            }
+        });
+        $('publish-story-btn').addEventListener('click', publishStory);
+
+        // Search
+        searchInput.addEventListener('input', renderSearchResults);
+
+        // Chat
+        $('back-to-users').addEventListener('click', closeChat);
+        $('send-chat-btn').addEventListener('click', sendTextMessage);
+        chatInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendTextMessage(); } });
+        $('dm-filter-input').addEventListener('input', renderUsersChatList);
+        $('chat-media-input').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            e.target.value = '';
+            if (!file || !activeChatUser) return;
+            try {
+                const m = await prepareMedia(file, 900);
+                pushChatMessage({ from: currentUser.name, to: activeChatUser, text: '', media: m.url, mediaType: m.type, time: Date.now() });
+            } catch (err) {
+                notify(err.message);
+            }
+        });
+
+        // Posts
+        $('publish-post-btn').addEventListener('click', async () => {
+            const text = $('post-text').value.trim();
+            const file = $('post-media').files[0] || null;
+            if (!text && !file) return;
+            let media = '';
+            let mediaType = '';
+            if (file) {
+                try {
+                    const m = await prepareMedia(file, 1080);
+                    media = m.url;
+                    mediaType = m.type;
+                } catch (err) {
+                    return notify(err.message);
+                }
+            }
+            posts.unshift({
+                id: makeId(),
+                author: currentUser.name,
+                displayName: currentUser.displayName,
+                text,
+                media,
+                mediaType,
+                likes: 0,
+                likedBy: [],
+                time: Date.now()
+            });
+            if (!save('ms_posts', posts)) { posts.shift(); return; }
+            $('post-text').value = '';
+            $('post-media').value = '';
+            renderPosts();
+        });
+
+        // Admin: verification
+        $('grant-verify-btn').addEventListener('click', () => {
+            if (!currentUser || !isAdmin(currentUser)) return;
+            const input = $('verify-username-input');
+            const n = input.value.trim().toLowerCase().replace(/^@+/, '');
+            if (!n) return;
+            if (!findUserByName(n)) return notify(t('المستخدم غير موجود.', 'User not found.'));
+            if (verifiedUsers.includes(n)) return notify(t('المستخدم موثّق مسبقاً.', 'User is already verified.'));
+            verifiedUsers.push(n);
+            if (!save('ms_verified', verifiedUsers)) { verifiedUsers.pop(); return; }
+            input.value = '';
+            notify(t('تم توثيق @' + n + ' بنجاح!', 'Verified @' + n + ' successfully!'));
+            renderProfileHeader();
+            renderPosts();
+        });
+
+        // Global click delegation (replaces the inline onclick handlers)
+        document.addEventListener('click', (e) => {
+            const el = e.target;
+            if (!el || !el.closest) return;
+            if (el.classList.contains('story-modal-overlay')) { el.style.display = 'none'; return; }
+
+            const closeBtn = el.closest('[data-close-modal]');
+            if (closeBtn) { $(closeBtn.dataset.closeModal).style.display = 'none'; return; }
+
+            const followBtn = el.closest('[data-follow]');
+            if (followBtn) { toggleFollow(followBtn.dataset.follow); return; }
+
+            const msgBtn = el.closest('[data-message]');
+            if (msgBtn) { closeAllModals(); openChat(msgBtn.dataset.message); return; }
+
+            const likeBtn = el.closest('[data-like]');
+            if (likeBtn) { toggleLike(likeBtn.dataset.like); return; }
+
+            const navBtn = el.closest('.ios-nav-item');
+            if (navBtn) { activateTab(navBtn.dataset.tab); return; }
+
+            const goBtn = el.closest('[data-goto]');
+            if (goBtn) { activateTab(goBtn.dataset.goto); return; }
+
+            const folBox = el.closest('[data-followers]');
+            if (folBox && currentUser) { openFollowersModal(folBox.dataset.followers); return; }
+
+            if (el.closest('[data-add-story]')) { openStoryStudio(); }
+        });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllModals(); });
+        window.addEventListener('resize', positionBubble);
+
+        // Hide the bottom nav while scrolling down
+        let lastScrollTop = 0;
+        const bottomNav = $('bottom-nav-bar');
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop && scrollTop > 50) bottomNav.classList.add('nav-hidden');
+            else bottomNav.classList.remove('nav-hidden');
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        }, false);
+
+        /* ===================== Boot ===================== */
+        applyLanguage(currentLang);
+        setTheme(currentTheme);
+
+        const session = load('ms_current_user', null);
+        if (session && session.name) {
+            const u = findUserByName(String(session.name).toLowerCase());
+            if (u) {
+                currentUser = u;
+                initApp();
+            } else {
+                try { localStorage.removeItem('ms_current_user'); } catch (e) { /* ignore */ }
+            }
+        }
+    })();
+    </script>
 </body>
 </html>
