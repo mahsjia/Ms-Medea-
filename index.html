@@ -62,7 +62,7 @@
       <div id="posts-feed" class="ios-feed-list"></div>
     </section>
 
-    <!-- البحث مع إشارة العدسة -->
+    <!-- البحث وفحص الحسابات -->
 <section id="search-tab" class="ios-tab-pane">
   <div class="ios-profile-card">
     <div style="position: relative; display: flex; align-items: center;">
@@ -71,7 +71,31 @@
     </div>
     <div id="search-results" class="mt-md"></div>
   </div>
+
+  <!-- كارت فحص وتفاصيل الحساب عند الضغط عليه -->
+  <div id="user-inspect-card" class="ios-profile-card mt-md" hidden>
+    <div class="insta-profile-header">
+      <div class="ios-avatar-ring"><div class="ios-avatar-inner" id="inspect-avatar-box"></div></div>
+      <div class="insta-profile-stats">
+        <div class="stat-box"><strong id="inspect-posts-count">0</strong><span data-i="posts">منشورات</span></div>
+        <div class="stat-box"><strong id="inspect-followers-count">0</strong><span data-i="followers">المتابعون</span></div>
+        <div class="stat-box"><strong id="inspect-following-count">0</strong><span data-i="following">المتابعة</span></div>
+      </div>
+    </div>
+    <div class="insta-bio-section mt-sm">
+      <h2 id="inspect-display-name"></h2>
+      <p id="inspect-username-text" class="ios-sub-text"></p>
+      <p id="inspect-bio-text" class="ios-sub-text" style="white-space: pre-line;"></p>
+    </div>
+    <div class="insta-action-buttons mt-md" style="display: flex; gap: 10px;">
+      <button id="inspect-follow-btn" class="ios-main-btn" style="flex: 1;"></button>
+      <button id="inspect-chat-btn" class="insta-btn-alt" style="flex: 1;" data-i="message">مراسلة</button>
+    </div>
+    <div class="ios-section-title mt-lg" data-i="posts">منشورات الحساب</div>
+    <div id="inspect-posts-list" class="ios-feed-list"></div>
+  </div>
 </section>
+
 
 
     <!-- الريلز -->
